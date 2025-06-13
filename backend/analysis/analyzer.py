@@ -80,6 +80,10 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
     avg_centroid = np.mean(centroid)
     diction_score = 9 if avg_centroid > 2500 else 6 if avg_centroid > 1800 else 3
 
+    pitch_fb = get_feedback(pitch_score, "pitch")
+    breath_fb = get_feedback(breath_score, "breath")
+    diction_fb = get_feedback(diction_score, "diction")
+
     feedback = {
         "pitch_score": pitch_score,
         "breath_score": breath_score,
@@ -87,36 +91,10 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
         "total_score": round((pitch_score + breath_score + diction_score) / 3, 1),
         "pitch_plot": pitch_plot,
         "breath_plot": breath_plot,
-        "pitch_feedback": get_feedback(pitch_score, "pitch"),
-        "breath_feedback": get_feedback(breath_score, "breath"),
-        "diction_feedback": get_feedback(diction_score, "diction")
+        "pitch_feedback": pitch_fb,
+        "breath_feedback": breath_fb,
+        "diction_feedback": diction_fb,
+        "gpt_feedback": "GPT feedback temporarily disabled. Upgrade or re-enable later."
     }
 
     return feedback
-
-
-# # Example usage:
-# # Test Case 1: C major scale (normal)
-# file_path = 'testing/scale_normal.wav'
-# reference_notes = ["C4", "D4", "E4", "F4", "G4"]
-# print("\n=== Running Test: Normal Scale ===")
-# analyze_singing(file_path, reference_notes)
-
-# # Test Case 2: With breath dropouts
-# file_path = 'testing/scale_breathy.wav'
-# print("\n=== Running Test: Breath Dropout ===")
-# analyze_singing(file_path, reference_notes)
-
-# # Test Case 3: Muffled diction
-# file_path = 'testing/scale_muffled.wav'
-# print("\n=== Running Test: Muffled Diction ===")
-# analyze_singing(file_path, reference_notes)
-
-# # Test Case 4: Sustained Vibrato A4
-# file_path = 'testing/sustain_vibrato.wav'
-# reference_notes = ["A4"] * 5  # Simulated 5 seconds of A4
-# print("\n=== Running Test: Vibrato Sustained Note ===")
-# analyze_singing(file_path, reference_notes)
-
-# # Test Case 5: Do a Deer
-# reference_notes = C4,D4,E4,C4,C4

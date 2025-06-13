@@ -1,0 +1,86 @@
+/* styles/Analyzer.css */
+.analyzer-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+}
+
+.analyzer-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #1e40af;
+  margin-bottom: 24px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+input[type="file"],
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563eb;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+button:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.feedback-section {
+  margin-top: 32px;
+}
+
+.feedback-section h2 {
+  font-size: 1.2rem;
+  color: #1e3a8a;
+  margin-bottom: 6px;
+}
+
+.feedback-section p {
+  margin-bottom: 12px;
+}
+
+.feedback-section img {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.score-highlight {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-top: 16px;
+}

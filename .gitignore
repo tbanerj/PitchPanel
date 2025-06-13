@@ -1,0 +1,20 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+
+# Ignore virtual environment
+venv/
+env/
+
+# Ignore environment variable files
+.env
+
+# Ignore temporary files from editor or OS
+.DS_Store
+*.swp
+
+# Jupyter or notebook checkpoints (if applicable)
+.ipynb_checkpoints/
+
+# VS Code settings (optional)
+.vscode/
