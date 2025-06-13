@@ -26,7 +26,7 @@ export default function Home() {
 
   return (
     <main className="analyzer-container">
-      <h1 className="analyzer-title">🎤 VirtuOpera Vocal Analyzer</h1>
+      <h1 className="analyzer-title">VirtuSinger Vocal Adviser</h1>
 
       <div className="input-group">
         <label className="input-label">Upload Singing Audio (.wav)</label>
@@ -63,7 +63,7 @@ export default function Home() {
             <h2>🗣 Diction Feedback</h2>
             <p>{result.diction_score}/10 — {result.diction_feedback}</p>
           </div>
-          <div className="score-highlight">⭐ Total Score: {result.total_score}/10</div>
+          <div className="score-highlight">Total Score: {result.total_score}/10</div>
         </div>
       )}
     </main>
