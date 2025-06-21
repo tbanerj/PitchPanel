@@ -1,6 +1,11 @@
 fastapi
 uvicorn
+python-multipart
+pydantic
 librosa
 numpy
 matplotlib
-python-multipart
+scikit-learn
+openai
+joblib
+aiofiles

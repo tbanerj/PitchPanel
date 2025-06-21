@@ -1,7 +1,30 @@
 
-# 🎤 VirtuOpera Vocal Analyzer
+# VirtuOpera Vocal Analyzer
 
 VirtuOpera is a web-based vocal analysis tool designed for singers to receive immediate feedback on pitch accuracy, breath support, and diction quality based on audio recordings. It uses signal processing (via `librosa`) and a simple ML model to generate scores and personalized suggestions.
+
+---
+
+## 🔍 Problem Statement & Solution Overview
+
+### Problem
+
+Despite the benefits of vocal training, quality vocal coaching remains out of reach for many people due to several key barriers:
+
+- **Lack of Accessibility**: Vocal lessons are often expensive and locked behind high paywalls.
+- **Limited Feedback**: Students often only receive feedback once a week, leading to poor practice habits.
+- **Geographic & Physical Barriers**: Individuals in rural areas or with disabilities may find it difficult to attend in-person lessons.
+- **Beginners Face Uncertainty**: Many don’t know where to start or lack tools to guide early practice.
+- **Language & Musical Literacy Barriers**: Assumes access to Western music notation and English instruction.
+
+### Solution
+
+VirtuOpera is a digital vocal coaching assistant that provides:
+
+- **Standalone feedback for beginners** or
+- **Supplemental feedback for students** between traditional lessons.
+
+It combines real-time vocal analysis, ML-based scoring, and personalized feedback into a lightweight web app.
 
 ---
 
@@ -48,7 +71,7 @@ frontend/
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # or .\venv\Scripts\activate on Windows
+source venv/bin/activate  # or .env\Scriptsctivate on Windows
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
@@ -82,12 +105,12 @@ App will run at: `http://localhost:3000`
 
 ## 🧠 How Scoring Works
 
-| Feature   | Method                        | Criteria |
-|-----------|-------------------------------|----------|
-| **Pitch** | Compare `f0` to reference     | Deviation < 30 Hz |
-| **Breath**| RMS dropouts below threshold  | Few dropouts = better |
-| **Diction**| Spectral centroid average     | Higher = clearer diction |
-| **Total Score** | ML prediction using LinearRegression |
+| Feature      | Method                        | Criteria                      |
+|--------------|-------------------------------|-------------------------------|
+| **Pitch**    | Compare `f0` to reference     | Deviation < 30 Hz             |
+| **Breath**   | RMS dropouts below threshold  | Few dropouts = better         |
+| **Diction**  | Spectral centroid average     | Higher = clearer diction      |
+| **Total**    | ML prediction (LinearRegression) | Based on all audio features |
 
 ---
 
@@ -104,12 +127,14 @@ Frontend:
 
 ---
 
-## 🧠 Future Improvements
+## 🌱 Future Improvements
 
-- Train ML model with real human-rated examples
-- Use formant tracking for better diction
-- Add chart visualizations (radar/bar)
-- Allow audio download and history saving
+- Train ML model with human-rated samples
+- Use formant tracking for diction clarity
+- Add user dashboard and progress tracking
+- Integrate sheet music reading (MusicXML, PDF)
+- Build multilingual support for global reach
+- Implement AI-powered vocal advice generation
 
 ---
 
