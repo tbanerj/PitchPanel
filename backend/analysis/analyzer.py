@@ -1,4 +1,3 @@
-
 import librosa
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,6 +7,7 @@ import os
 import joblib
 import subprocess
 from sklearn.linear_model import LinearRegression
+from scipy.signal import find_peaks
 
 NOTE_FEEDBACK = {
     "pitch": [
@@ -54,7 +54,7 @@ def train_simple_model():
     y = np.array([9.8, 8.3, 6.5, 4.5, 5.5, 10, 7.3, 7.9])
     model = LinearRegression()
     model.fit(X, y)
-    joblib.dump("basic_score_model.joblib", model)
+    joblib.dump(model, "basic_score_model.joblib")
     return model
 
 def get_basic_model():
@@ -67,34 +67,72 @@ def convert_to_wav(input_path):
     output_path = os.path.splitext(input_path)[0] + "_converted.wav"
     try:
         subprocess.run([
-            "ffmpeg", "-i", input_path, "-ar", "22050", "-ac", "1", output_path
+            "ffmpeg", "-y", "-i", input_path, "-ar", "22050", "-ac", "1", output_path
         ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return output_path
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Failed to convert audio file: {e.stderr.decode()}") from e
 
+def cleanup_temp_uploads():
+    temp_dir = "temp_uploads"
+    if os.path.exists(temp_dir):
+        for f in os.listdir(temp_dir):
+            path = os.path.join(temp_dir, f)
+            try:
+                if os.path.isfile(path):
+                    os.remove(path)
+            except Exception as e:
+                print(f"Failed to delete {path}: {e}")
+
 def score_analysis_metrics(deviation, rms, centroid, y, sr):
     good_ratio = np.sum(deviation < 30) / np.sum(~np.isnan(deviation))
     pitch_score = 10 if good_ratio > 0.9 else 8 if good_ratio > 0.75 else 6 if good_ratio > 0.5 else 4
 
-    avg_energy = np.mean(rms)
-    energy_std = np.std(rms)
-    energy_threshold = np.percentile(rms, 15)
-    dropouts = np.sum(rms < energy_threshold)
-    breath_score = 4 if dropouts > 15 or avg_energy < 0.01 else 6 if dropouts > 10 or energy_std < 0.005 else 8 if dropouts > 5 or energy_std < 0.01 else 10
+    dropouts = np.sum(rms < np.percentile(rms, 15))
+    slope_std = float(np.std(np.diff(rms)))
+    zcr = librosa.feature.zero_crossing_rate(y)[0]
+    zcr_median = float(np.median(zcr))
+
+    peaks, _ = find_peaks(rms, height=np.percentile(rms, 60), distance=sr//2)
+    peak_density = len(peaks) / (len(rms) / sr)
+
+    breath_score = 10
+    if dropouts > 20:
+        breath_score -= 3
+    elif dropouts > 10:
+        breath_score -= 2
+    elif dropouts > 5:
+        breath_score -= 1
+    if slope_std > 0.01:
+        breath_score -= 1
+    if zcr_median > 0.12:
+        breath_score -= 1
+    if peak_density < 0.4:
+        breath_score -= 1
+    breath_score = int(np.clip(breath_score, 0, 10))
 
     flux = librosa.onset.onset_strength(y=y, sr=sr)
-    flux_var = np.std(flux)
-    centroid_std = np.std(centroid)
-    diction_score = 10 if centroid_std > 800 and flux_var > 0.07 else 8 if centroid_std > 600 and flux_var > 0.05 else 6 if centroid_std > 400 and flux_var > 0.03 else 4
+    flux_var = float(np.std(flux))
+    centroid_mean = float(np.mean(centroid))
+    centroid_std = float(np.std(centroid))
+
+    if centroid_mean > 2200 and centroid_std > 700 and flux_var > 0.07:
+        diction_score = 10
+    elif centroid_mean > 1800 and centroid_std > 600 and flux_var > 0.05:
+        diction_score = 8
+    elif centroid_mean > 1400 and centroid_std > 400 and flux_var > 0.03:
+        diction_score = 6
+    else:
+        diction_score = 4
 
     model = get_basic_model()
-    total_score = round(min(model.predict([[pitch_score, breath_score, diction_score]])[0], 10), 1)
+    total_score = round(float(min(model.predict([[pitch_score, breath_score, diction_score]])[0], 10)), 1)
 
     return pitch_score, breath_score, diction_score, total_score
 
 def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
-    if not file_path.endswith(".wav"):
+    delete_after = not file_path.endswith(".wav")
+    if delete_after:
         file_path = convert_to_wav(file_path)
 
     y, sr = librosa.load(file_path, sr=sr)
@@ -135,11 +173,13 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
 
     pitch_score, breath_score, diction_score, total_score = score_analysis_metrics(deviation, rms, centroid, y, sr)
 
+    cleanup_temp_uploads()
+
     feedback = {
-        "pitch_score": pitch_score,
-        "breath_score": breath_score,
-        "diction_score": diction_score,
-        "total_score": total_score,
+        "pitch_score": int(pitch_score),
+        "breath_score": int(breath_score),
+        "diction_score": int(diction_score),
+        "total_score": float(total_score),
         "pitch_plot": pitch_plot,
         "breath_plot": breath_plot,
         "pitch_feedback": get_feedback(pitch_score, "pitch"),

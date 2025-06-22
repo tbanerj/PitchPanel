@@ -29,7 +29,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-white to-purple-100 px-4 py-12">
       <main className="analyzer-container">
-        <h1 className="analyzer-title">🎤 VirtuOpera Vocal Analyzer</h1>
+        <h1 className="analyzer-title">Vocal Analyzer</h1>
 
         <div className="input-group">
           <label className="input-label" htmlFor="fileUpload">
@@ -99,7 +99,7 @@ export default function Home() {
             </div>
 
             <div className="score-highlight">
-              🎯 Total Score: {result.total_score}/10
+              Total Score: {result.total_score}/10
             </div>
           </div>
         )}
