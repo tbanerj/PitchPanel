@@ -1,7 +1,6 @@
-
 # PitchPanel Vocal Analyzer
 
-VirtuOpera is a web-based vocal analysis tool designed for singers to receive immediate feedback on pitch accuracy, breath support, and diction quality based on audio recordings. It uses signal processing (via `librosa`) and a simple ML model to generate scores and personalized suggestions.
+**PitchPanel** is a web-based vocal analysis tool designed for singers to receive immediate feedback on pitch accuracy, breath support, and diction quality based on audio recordings. It uses signal processing (via `librosa`) and a simple ML model to generate scores and personalized suggestions.
 
 ---
 
@@ -19,9 +18,9 @@ Despite the benefits of vocal training, quality vocal coaching remains out of re
 
 ### Solution
 
-VirtuOpera is a digital vocal coaching assistant that provides:
+**PitchPanel** is a digital vocal coaching assistant that provides:
 
-- **Standalone feedback for beginners** or
+- **Standalone feedback for beginners**, or
 - **Supplemental feedback for students** between traditional lessons.
 
 It combines real-time vocal analysis, ML-based scoring, and personalized feedback into a lightweight web app.
@@ -71,7 +70,7 @@ frontend/
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # or .env\Scriptsctivate on Windows
+source venv/bin/activate  # or .\venv\Scripts\activate on Windows
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
@@ -105,24 +104,30 @@ App will run at: `http://localhost:3000`
 
 ## 🧠 How Scoring Works
 
-| Feature      | Method                        | Criteria                      |
-|--------------|-------------------------------|-------------------------------|
-| **Pitch**    | Compare `f0` to reference     | Deviation < 30 Hz             |
-| **Breath**   | RMS dropouts below threshold  | Few dropouts = better         |
-| **Diction**  | Spectral centroid average     | Higher = clearer diction      |
+| Feature      | Method                           | Criteria                   |
+|--------------|----------------------------------|----------------------------|
+| **Pitch**    | Compare `f0` to reference notes  | Deviation < 30 Hz          |
+| **Breath**   | RMS dropouts below threshold     | Few dropouts = better      |
+| **Diction**  | Spectral centroid average        | Higher = clearer diction   |
 | **Total**    | ML prediction (LinearRegression) | Based on all audio features |
 
 ---
 
 ## 📦 Dependencies
 
-Backend:
-- `fastapi`, `uvicorn`
-- `librosa`, `numpy`, `matplotlib`
-- `scikit-learn`, `joblib`
+**Backend**:
+- `fastapi`
+- `uvicorn`
+- `librosa`
+- `numpy`
+- `matplotlib`
+- `scikit-learn`
+- `joblib`
 
-Frontend:
-- `next`, `react`, `axios`
+**Frontend**:
+- `next`
+- `react`
+- `axios`
 - Optional: `tailwindcss` or plain CSS
 
 ---
