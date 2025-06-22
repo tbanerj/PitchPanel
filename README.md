@@ -1,5 +1,5 @@
 
-# VirtuOpera Vocal Analyzer
+# PitchPanel Vocal Analyzer
 
 VirtuOpera is a web-based vocal analysis tool designed for singers to receive immediate feedback on pitch accuracy, breath support, and diction quality based on audio recordings. It uses signal processing (via `librosa`) and a simple ML model to generate scores and personalized suggestions.
 
