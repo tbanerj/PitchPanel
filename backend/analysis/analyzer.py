@@ -84,47 +84,46 @@ def cleanup_temp_uploads():
             except Exception as e:
                 print(f"Failed to delete {path}: {e}")
 
-def score_analysis_metrics(deviation, rms, centroid, y, sr):
-    good_ratio = np.sum(deviation < 30) / np.sum(~np.isnan(deviation))
-    pitch_score = 10 if good_ratio > 0.9 else 8 if good_ratio > 0.75 else 6 if good_ratio > 0.5 else 4
+def score_analysis_metrics(deviation, f0, rms, centroid, flux, zcr, y, sr):
+    # --- PITCH ---
+    # Only consider voiced frames (where f0 is not NaN)
+    voiced = ~np.isnan(f0)
+    if np.sum(voiced) == 0:
+        pitch_score = 0
+    else:
+        # Mean absolute deviation from reference (in Hz)
+        mean_dev = np.nanmean(deviation[voiced])
+        # Pitch stability (standard deviation of f0 in cents)
+        cents = 1200 * np.log2(f0[voiced] / np.nanmean(f0[voiced]))
+        pitch_stability = np.nanstd(cents)
+        # Score: lower deviation and lower instability = higher score
+        pitch_score = 10 - (mean_dev / 30) - (pitch_stability / 50)
+        pitch_score = np.clip(pitch_score, 0, 10)
 
-    dropouts = np.sum(rms < np.percentile(rms, 15))
-    slope_std = float(np.std(np.diff(rms)))
-    zcr = librosa.feature.zero_crossing_rate(y)[0]
-    zcr_median = float(np.median(zcr))
+    # --- BREATH ---
+    # RMS energy: count dropouts (frames below 15th percentile)
+    energy_threshold = np.percentile(rms, 15)
+    dropouts = np.sum(rms < energy_threshold)
+    dropout_ratio = dropouts / len(rms)
+    rms_var = np.std(rms)
+    # Penalize for high dropout ratio and high variance
+    breath_score = 10 - (dropout_ratio * 20) - (rms_var * 50)
+    breath_score = np.clip(breath_score, 0, 10)
 
-    peaks, _ = find_peaks(rms, height=np.percentile(rms, 60), distance=sr//2)
-    peak_density = len(peaks) / (len(rms) / sr)
-
-    breath_score = 10
-    if dropouts > 20:
-        breath_score -= 3
-    elif dropouts > 10:
-        breath_score -= 2
-    elif dropouts > 5:
-        breath_score -= 1
-    if slope_std > 0.01:
-        breath_score -= 1
-    if zcr_median > 0.12:
-        breath_score -= 1
-    if peak_density < 0.4:
-        breath_score -= 1
-    breath_score = int(np.clip(breath_score, 0, 10))
-
-    flux = librosa.onset.onset_strength(y=y, sr=sr)
-    flux_var = float(np.std(flux))
+    # --- DICTION ---
     centroid_mean = float(np.mean(centroid))
     centroid_std = float(np.std(centroid))
+    flux_var = float(np.std(flux))
+    zcr_median = float(np.median(zcr))
+    # Score: higher centroid, higher flux, higher zcr = better diction
+    # Normalize each metric to [0, 1] based on typical singing values
+    centroid_score = np.clip((centroid_mean - 1200) / 1200, 0, 1)
+    flux_score = np.clip((flux_var - 0.01) / 0.07, 0, 1)
+    zcr_score = np.clip((zcr_median - 0.03) / 0.09, 0, 1)
+    diction_score = (centroid_score + flux_score + zcr_score) / 3 * 10
+    diction_score = np.clip(diction_score, 0, 10)
 
-    if centroid_mean > 2200 and centroid_std > 700 and flux_var > 0.07:
-        diction_score = 10
-    elif centroid_mean > 1800 and centroid_std > 600 and flux_var > 0.05:
-        diction_score = 8
-    elif centroid_mean > 1400 and centroid_std > 400 and flux_var > 0.03:
-        diction_score = 6
-    else:
-        diction_score = 4
-
+    # --- TOTAL SCORE ---
     model = get_basic_model()
     total_score = round(float(min(model.predict([[pitch_score, breath_score, diction_score]])[0], 10)), 1)
 
@@ -137,7 +136,8 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
 
     y, sr = librosa.load(file_path, sr=sr)
 
-    f0, _, _ = librosa.pyin(y, fmin=librosa.note_to_hz('C2'), fmax=librosa.note_to_hz('C7'), sr=sr)
+    # --- PITCH EXTRACTION ---
+    f0, _, _ = librosa.pyin(y, fmin=float(librosa.note_to_hz('C2')), fmax=float(librosa.note_to_hz('C7')), sr=sr)
     times = librosa.times_like(f0)
 
     if reference_notes:
@@ -148,9 +148,10 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
         ref_interp = None
         deviation = np.zeros_like(f0)
 
+    # --- PITCH PLOT ---
     pitch_fig, ax = plt.subplots(figsize=(10, 3))
     ax.plot(times, f0, label="Sung Pitch", color="blue")
-    if reference_notes:
+    if reference_notes and ref_interp is not None:
         ax.plot(times, ref_interp, label="Reference", linestyle="--", color="orange")
     ax.set_title("Pitch Contour")
     ax.set_xlabel("Time (s)")
@@ -158,6 +159,7 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
     ax.legend()
     pitch_plot = create_plot_image(pitch_fig)
 
+    # --- BREATH (RMS) ---
     rms = librosa.feature.rms(y=y)[0]
     breath_fig, ax2 = plt.subplots(figsize=(10, 3))
     ax2.plot(librosa.times_like(rms), rms, label="RMS Energy", color="green")
@@ -169,22 +171,28 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
     ax2.legend()
     breath_plot = create_plot_image(breath_fig)
 
+    # --- DICTION (SPECTRAL) ---
     centroid = librosa.feature.spectral_centroid(y=y, sr=sr)[0]
+    flux = librosa.onset.onset_strength(y=y, sr=sr)
+    zcr = librosa.feature.zero_crossing_rate(y)[0]
 
-    pitch_score, breath_score, diction_score, total_score = score_analysis_metrics(deviation, rms, centroid, y, sr)
+    # --- SCORING ---
+    pitch_score, breath_score, diction_score, total_score = score_analysis_metrics(
+        deviation, f0, rms, centroid, flux, zcr, y, sr
+    )
 
     cleanup_temp_uploads()
 
     feedback = {
-        "pitch_score": int(pitch_score),
-        "breath_score": int(breath_score),
-        "diction_score": int(diction_score),
+        "pitch_score": int(round(pitch_score)),
+        "breath_score": int(round(breath_score)),
+        "diction_score": int(round(diction_score)),
         "total_score": float(total_score),
         "pitch_plot": pitch_plot,
         "breath_plot": breath_plot,
-        "pitch_feedback": get_feedback(pitch_score, "pitch"),
-        "breath_feedback": get_feedback(breath_score, "breath"),
-        "diction_feedback": get_feedback(diction_score, "diction")
+        "pitch_feedback": get_feedback(int(round(pitch_score)), "pitch"),
+        "breath_feedback": get_feedback(int(round(breath_score)), "breath"),
+        "diction_feedback": get_feedback(int(round(diction_score)), "diction")
     }
 
     return feedback
