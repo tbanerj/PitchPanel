@@ -80,7 +80,7 @@ API will be available at: `http://localhost:8000/docs`
 ### 2. Frontend (Next.js)
 
 ```bash
-cd frontend
+cd newfrontend
 npm install
 npm run dev
 ```
@@ -125,10 +125,12 @@ App will run at: `http://localhost:3000`
 - `joblib`
 
 **Frontend**:
-- `next`
-- `react`
+- `tailwindcss`
+- `vite`
 - `axios`
-- Optional: `tailwindcss` or plain CSS
+- `svelte`
+
+[//]: # (- Optional: `tailwindcss` or plain CSS)
 
 ---
 
