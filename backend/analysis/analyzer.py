@@ -238,55 +238,136 @@ def analyze_breath_support(y, sr, rms):
     return breath_score, energy_consistency, dropout_score, phrase_score, timing_score
 
 def analyze_diction_articulation(y, sr):
-    """Comprehensive diction and articulation analysis"""
+    """Enhanced diction and articulation analysis with better consonant detection"""
     
     # 1. Spectral centroid (brightness)
     centroid = librosa.feature.spectral_centroid(y=y, sr=sr)[0]
     centroid_mean = np.mean(centroid)
-    centroid_std = np.std(centroid)
-    
-    # Higher centroid indicates brighter, more articulated sound
     brightness_score = np.clip((centroid_mean - 1000) / 200, 0, 10)
     
     # 2. Spectral rolloff (high frequency content)
-    rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)[0]
+    rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr, roll_percent=0.95)[0]
     rolloff_mean = np.mean(rolloff)
     rolloff_score = np.clip((rolloff_mean - 2000) / 500, 0, 10)
     
-    # 3. Onset strength (consonant clarity)
-    onset_env = librosa.onset.onset_strength(y=y, sr=sr)
-    onset_score = np.clip(np.mean(onset_env) * 5, 0, 10)
+    # 3. Enhanced onset detection for consonants
+    onset_env = librosa.onset.onset_strength(y=y, sr=sr, aggregate=np.median)
+    onset_frames = librosa.onset.onset_detect(onset_envelope=onset_env, sr=sr)
     
-    # 4. Zero crossing rate (articulation clarity)
-    zcr = librosa.feature.zero_crossing_rate(y)[0]
+    # Calculate onset strength metrics
+    if len(onset_frames) > 0:
+        onset_strengths = onset_env[onset_frames]
+        strong_onsets = np.sum(onset_strengths > np.percentile(onset_env, 75))
+        onset_score = np.clip(strong_onsets / len(onset_frames) * 10, 0, 10)
+    else:
+        onset_score = 5.0  # Neutral score if no onsets detected
+    
+    # 4. Enhanced zero crossing rate analysis
+    zcr = librosa.feature.zero_crossing_rate(y, frame_length=2048, hop_length=512)[0]
     zcr_mean = np.mean(zcr)
-    # Moderate ZCR is good for singing (not too high, not too low)
-    zcr_score = np.clip(10 - abs(zcr_mean - 0.08) * 100, 0, 10)
+    zcr_var = np.var(zcr)
     
-    # 5. MFCC analysis (timbre characteristics)
+    # Higher variance indicates better consonant-vowel differentiation
+    zcr_var_score = np.clip(zcr_var * 100, 0, 10)
+    zcr_mean_score = np.clip(10 - abs(zcr_mean - 0.1) * 100, 0, 10)  # Ideal around 0.1
+    zcr_score = (zcr_mean_score * 0.4 + zcr_var_score * 0.6)
+    
+    # 5. Enhanced MFCC analysis with delta features
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+    mfcc_delta = librosa.feature.delta(mfcc)
+    
+    # Calculate articulation metrics
     mfcc_std = np.std(mfcc, axis=1)
-    # Higher variance in MFCC indicates more articulation
-    articulation_score = np.clip(np.mean(mfcc_std) * 2, 0, 10)
+    mfcc_delta_std = np.std(mfcc_delta, axis=1)
     
-    # 6. Spectral contrast (consonant-vowel distinction)
-    contrast = librosa.feature.spectral_contrast(y=y, sr=sr)
-    contrast_score = np.clip(np.mean(contrast) * 0.5, 0, 10)
+    # Combined articulation score
+    articulation_score = np.clip(np.mean(mfcc_std) * 1.5 + np.mean(mfcc_delta_std) * 2, 0, 10)
     
-    # 7. Overall diction score
-    diction_score = (brightness_score * 0.2 + rolloff_score * 0.15 + 
-                    onset_score * 0.25 + zcr_score * 0.15 + 
-                    articulation_score * 0.15 + contrast_score * 0.1)
+    # 6. Enhanced spectral contrast with more bands
+    contrast = librosa.feature.spectral_contrast(y=y, sr=sr, n_bands=6)
+    contrast_score = np.clip(np.mean(contrast) * 0.6, 0, 10)
     
-    return diction_score, brightness_score, rolloff_score, onset_score, zcr_score, articulation_score, contrast_score
+    # 7. New: Formant analysis for vowel clarity
+    try:
+        # Using a simple approximation of formant frequencies
+        formant_ratio = np.mean(centroid) / np.mean(rolloff)
+        formant_score = np.clip(10 - abs(formant_ratio - 0.4) * 20, 0, 10)
+    except:
+        formant_score = 5.0
+    
+    # 8. New: Harmonic-to-noise ratio for voice quality
+    harmonic = librosa.effects.harmonic(y)
+    percussive = librosa.effects.percussive(y)
+    hnr = 10 * np.log10(np.mean(harmonic**2) / (np.mean(percussive**2) + 1e-10))
+    hnr_score = np.clip(hnr / 5, 0, 10)  # 0-10 scale where higher is better
+    
+    # 9. New: Plosive detection (for consonant bursts)
+    spectral_flatness = librosa.feature.spectral_flatness(y=y)[0]
+    plosive_frames = np.where(spectral_flatness < np.percentile(spectral_flatness, 10))[0]
+    plosive_score = np.clip(len(plosive_frames) / len(spectral_flatness) * 20, 0, 10)
+    
+    # Weighted overall diction score
+    diction_score = (
+        brightness_score * 0.15 + 
+        rolloff_score * 0.15 +
+        onset_score * 0.25 +
+        zcr_score * 0.15 +
+        articulation_score * 0.15 +
+        contrast_score * 0.05 +
+        formant_score * 0.05 +
+        hnr_score * 0.03 +
+        plosive_score * 0.02
+    )
+    
+    return (
+        diction_score, brightness_score, rolloff_score, 
+        onset_score, zcr_score, articulation_score, 
+        contrast_score, formant_score, hnr_score, plosive_score
+    )
+
+def create_diction_plot(y, sr, diction_score):
+    """Enhanced diction visualization with more features"""
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(12, 9))
+    
+    # Spectral features
+    S = librosa.feature.melspectrogram(y=y, sr=sr)
+    S_dB = librosa.power_to_db(S, ref=np.max)
+    img = librosa.display.specshow(S_dB, x_axis='time', y_axis='mel', 
+                                 sr=sr, fmax=8000, ax=ax1)
+    ax1.set_title(f"Diction Analysis (Score: {diction_score:.1f}/10) - Spectrogram")
+    fig.colorbar(img, ax=ax1, format='%+2.0f dB')
+    
+    # Onset strength
+    onset_env = librosa.onset.onset_strength(y=y, sr=sr)
+    onset_times = librosa.times_like(onset_env, sr=sr)
+    ax2.plot(onset_times, onset_env, label='Onset Strength', color='orange')
+    ax2.set_ylabel('Strength')
+    ax2.set_title('Consonant Detection')
+    ax2.legend()
+    
+    # Zero crossing rate
+    zcr = librosa.feature.zero_crossing_rate(y)[0]
+    zcr_times = librosa.times_like(zcr, sr=sr)
+    ax3.plot(zcr_times, zcr, label='Zero Crossing Rate', color='green')
+    ax3.set_xlabel('Time (s)')
+    ax3.set_ylabel('Rate')
+    ax3.set_title('Articulation Clarity')
+    ax3.legend()
+    
+    plt.tight_layout()
+    return create_plot_image(fig)
 
 def score_analysis_metrics(f0, times, y, sr, rms, reference_notes=None):
-    """Main scoring function using improved analysis methods"""
+    """Updated to handle enhanced diction analysis"""
     
     # Analyze each component
     pitch_score, acc_score, stab_score, vib_score = analyze_pitch_accuracy(f0, times, reference_notes, sr)
     breath_score, energy_score, dropout_score, phrase_score, timing_score = analyze_breath_support(y, sr, rms)
-    diction_score, bright_score, rolloff_score, onset_score, zcr_score, artic_score, contrast_score = analyze_diction_articulation(y, sr)
+    
+    # Enhanced diction analysis
+    (diction_score, bright_score, rolloff_score, onset_score, 
+     zcr_score, artic_score, contrast_score, formant_score, 
+     hnr_score, plosive_score) = analyze_diction_articulation(y, sr)
     
     # Use advanced model for final scoring
     model = get_advanced_model()
@@ -296,10 +377,12 @@ def score_analysis_metrics(f0, times, y, sr, rms, reference_notes=None):
     return (pitch_score, breath_score, diction_score, total_score,
             acc_score, stab_score, vib_score,
             energy_score, dropout_score, phrase_score, timing_score,
-            bright_score, rolloff_score, onset_score, zcr_score, artic_score, contrast_score)
+            bright_score, rolloff_score, onset_score, zcr_score, 
+            artic_score, contrast_score, formant_score, hnr_score, 
+            plosive_score)
 
 def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
-    """Main analysis function with improved algorithms"""
+    """Main analysis function with improved diction analysis"""
     
     delete_after = not file_path.endswith(".wav")
     if delete_after:
@@ -328,7 +411,9 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
     (pitch_score, breath_score, diction_score, total_score,
      acc_score, stab_score, vib_score,
      energy_score, dropout_score, phrase_score, timing_score,
-     bright_score, rolloff_score, onset_score, zcr_score, artic_score, contrast_score) = score_analysis_metrics(
+     bright_score, rolloff_score, onset_score, zcr_score, 
+     artic_score, contrast_score, formant_score, hnr_score, 
+     plosive_score) = score_analysis_metrics(
         f0, times, y, sr, rms, reference_notes
     )
     
@@ -386,27 +471,8 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
     
     breath_plot = create_plot_image(breath_fig)
     
-    # Diction plot
-    diction_fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 6))
-    
-    # Spectral centroid
-    centroid_times = librosa.times_like(centroid, sr=sr, hop_length=512)
-    ax1.plot(centroid_times, centroid, label="Spectral Centroid", color="purple", alpha=0.7)
-    ax1.set_title(f"Diction Analysis (Score: {diction_score:.1f}/10)")
-    ax1.set_ylabel("Frequency (Hz)")
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
-    
-    # Onset strength
-    onset_env = librosa.onset.onset_strength(y=y, sr=sr, hop_length=512)
-    onset_times = librosa.times_like(onset_env, sr=sr, hop_length=512)
-    ax2.plot(onset_times, onset_env, label="Onset Strength", color="orange", alpha=0.7)
-    ax2.set_xlabel("Time (s)")
-    ax2.set_ylabel("Onset Strength")
-    ax2.legend()
-    ax2.grid(True, alpha=0.3)
-    
-    diction_plot = create_plot_image(diction_fig)
+    # Diction plot - using the new enhanced visualization
+    diction_plot = create_diction_plot(y, sr, diction_score)
     
     # Cleanup
     if delete_after:
@@ -441,7 +507,10 @@ def analyze_singing_ai(file_path, reference_notes=None, sr=22050):
                 "high_frequency": round(float(rolloff_score), 1),
                 "consonant_clarity": round(float(onset_score), 1),
                 "articulation": round(float(artic_score), 1),
-                "contrast": round(float(contrast_score), 1)
+                "spectral_contrast": round(float(contrast_score), 1),
+                "formant_clarity": round(float(formant_score), 1),
+                "voice_quality": round(float(hnr_score), 1),
+                "plosive_detection": round(float(plosive_score), 1)
             }
         }
     }
