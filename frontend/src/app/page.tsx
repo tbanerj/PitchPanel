@@ -1,109 +1,74 @@
 'use client';
 
-import { useState } from 'react';
-import { analyzeFile } from '../../lib/api';
-import Recorder from '../components/Recorder';
+import Image from 'next/image';
+import styles from './page.module.css';
 
-export default function Home() {
-  const [file, setFile] = useState<File | null>(null);
-  const [recordedFile, setRecordedFile] = useState<File | null>(null);
-  const [referenceNotes, setReferenceNotes] = useState('');
-  const [result, setResult] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleAnalyze = async (inputFile?: File) => {
-    const fileToAnalyze = inputFile || file || recordedFile;
-    if (!fileToAnalyze) return;
-    setLoading(true);
-    try {
-      const analysis = await analyzeFile(fileToAnalyze, referenceNotes);
-      setResult(analysis);
-    } catch (err) {
-      alert('Error analyzing file');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-white to-purple-100 px-4 py-12">
-      <main className="analyzer-container">
-        <h1 className="analyzer-title">Vocal Analyzer</h1>
+    <main className={styles.container}>
 
-        <div className="input-group">
-          <label className="input-label" htmlFor="fileUpload">
-            Upload Audio File
-          </label>
-          <input
-            id="fileUpload"
-            type="file"
-            accept="audio/*"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-          />
-        </div>
 
-        <div className="input-group">
-          <label className="input-label" htmlFor="referenceInput">
-            Reference Notes
-          </label>
-          <input
-            id="referenceInput"
-            type="text"
-            placeholder="e.g. C4,D4,E4"
-            value={referenceNotes}
-            onChange={(e) => setReferenceNotes(e.target.value)}
-          />
-        </div>
+      {/* Title */}
+      <section className={styles.titleSection}>
+        <h1 className={styles.title}>Welcome to Pitch Panel!</h1>
+        <p className={styles.subtitle}>The Next Generation of Vocal Training</p>
+      </section>
 
-        <div className="input-group">
-          <label className="input-label">Record Audio</label>
-          <Recorder
-            onRecordingComplete={(blob) => {
-              const newFile = new File([blob], 'recording.webm', { type: 'audio/webm' });
-              setRecordedFile(newFile);
-            }}
-          />
-          {recordedFile && (
-            <audio controls className="mt-2 w-full">
-              <source src={URL.createObjectURL(recordedFile)} type="audio/webm" />
-              Your browser does not support the audio element.
-            </audio>
-          )}
-        </div>
-
-        <button
-          onClick={() => handleAnalyze()}
-          disabled={loading || !(file || recordedFile)}
-        >
-          {loading ? 'Analyzing...' : 'Analyze'}
-        </button>
-
-        {result && (
-          <div className="feedback-section">
-            <div>
-              <h2>Pitch Feedback</h2>
-              <p>{result.pitch_score}/10 — {result.pitch_feedback}</p>
-              <img src={result.pitch_plot} alt="Pitch Plot" />
+      {/* Purpose Section */}
+      <section className={styles.purposeSection}>
+        <h2 className={styles.sectionHeader}>Purpose</h2>
+        <div className={styles.purposeGrid}>
+          <div className={styles.textColumn}>
+            <div className={styles.card}>
+              <h3>Problem</h3>
+              <p>
+                Despite the benefits of vocal training, quality vocal coaching remains out of reach
+                for many people due to several key barriers
+              </p>
             </div>
-
-            <div>
-              <h2>Breath Feedback</h2>
-              <p>{result.breath_score}/10 — {result.breath_feedback}</p>
-              <img src={result.breath_plot} alt="Breath Plot" />
+            <div className={styles.card}>
+              <h3>Solution</h3>
+              <p>
+                PitchPanel is a digital vocal coaching assistant that provides:
+              </p>
+              <ul>
+                <li>Standalone feedback for beginners, or</li>
+                <li>Supplemental feedback for students between traditional lessons.</li>
+              </ul>
+              <p>
+                It combines real-time vocal analysis, ML-based scoring, and personalized feedback
+                into a lightweight web app.
+              </p>
             </div>
-
-            <div>
-              <h2>Diction Feedback</h2>
-              <p>{result.diction_score}/10 — {result.diction_feedback}</p>
-            </div>
-
-            <div className="score-highlight">
-              Total Score: {result.total_score}/10
+            <div className={styles.card}>
+              <h3>Mission statement</h3>
+              <p className={styles.placeholder}>someone make a mission statement bro…</p>
             </div>
           </div>
-        )}
-      </main>
-    </div>
+          <div className={styles.imageColumn}>
+            <Image
+              src="/mic.png"
+              alt="Microphone"
+              width={600}
+              height={400}
+              className={styles.image}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Product Section */}
+      <section className={styles.productSection}>
+        <h2 className={styles.sectionHeader}>Product</h2>
+        <Image
+          src="/pitchpanel-croissant.jpg"
+          alt="croissant with grapes"
+          width={1000}
+          height={500}
+          className={styles.bannerImage}
+        />
+        <button className={styles.learnMoreButton}>Learn more</button>
+      </section>
+    </main>
   );
 }

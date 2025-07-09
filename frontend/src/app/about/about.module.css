@@ -1,0 +1,66 @@
+.container {
+  background-color: #f9f5ff;
+  padding: 64px 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+}
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #4b0082;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: #6b21a8;
+  margin-top: 8px;
+}
+
+.storySection {
+  margin-bottom: 48px;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4b0082;
+  margin-bottom: 16px;
+}
+
+.paragraph {
+  color: #1e1b4b;
+  line-height: 1.75;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.imageGridSection {
+  margin: 48px 0;
+}
+
+.imageGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.image {
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  object-fit: cover;
+}
+
+.textBlockSection {
+  margin-top: 40px;
+}
