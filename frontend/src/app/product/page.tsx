@@ -8,6 +8,7 @@ import styles from './product.module.css';
 export default function ProductPage() {
   const [file, setFile] = useState<File | null>(null);
   const [recordedFile, setRecordedFile] = useState<File | null>(null);
+  const [sheetMusicFile, setSheetMusicFile] = useState<File | null>(null); // NEW
   const [referenceNotes, setReferenceNotes] = useState('');
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,10 @@ export default function ProductPage() {
     if (!fileToAnalyze) return;
     setLoading(true);
     try {
-      const analysis = await analyzeFile(fileToAnalyze, referenceNotes);
+      const analysis = await analyzeFile(fileToAnalyze, {
+        referenceNotes,
+        sheetMusic: sheetMusicFile || undefined,
+      });
       setResult(analysis);
     } catch (err) {
       alert('Error analyzing file');
@@ -60,6 +64,7 @@ export default function ProductPage() {
               const newFile = new File([blob], 'recording.webm', { type: 'audio/webm' });
               setRecordedFile(newFile);
             }}
+            onSheetMusicUpload={setSheetMusicFile} // NEW
           />
           {recordedFile && (
             <audio controls className={styles.audioPreview}>
