@@ -73,15 +73,15 @@ export default function Recorder({
     <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div style={{ display: 'flex', gap: '1rem' }}>
         <button onClick={recording ? stopRecording : startRecording}>
-          {recording ? '🛑 Stop Recording' : '🎙 Start Recording'}
+          {recording ? 'Stop Recording' : 'Start Recording'}
         </button>
         
-        <button 
+        {/* <button 
           onClick={triggerFileInput}
           style={{ backgroundColor: sheetMusicFile ? '#e0f7fa' : undefined }}
         >
-          {sheetMusicFile ? '🎼 Sheet Music Uploaded' : '📄 Upload Sheet Music'}
-        </button>
+          {sheetMusicFile ? 'Sheet Music Uploaded' : 'Upload Sheet Music'}
+        </button> */}
         
         <input
           type="file"

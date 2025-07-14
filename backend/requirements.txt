@@ -14,3 +14,4 @@ scipy>=1.10.1  # For advanced signal processing
 midiutil>=1.2.1  # For SheetVision's MIDI output
 Pillow>=9.5.0  # For image handling
 python-dotenv>=1.0.0  # For configuration management
+pretty_midi>=0.2.9  # For MIDI file handling

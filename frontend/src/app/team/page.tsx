@@ -7,55 +7,49 @@ const teamMembers = [
   {
     name: 'Trinav Banerjee - Founder & CEO',
     image: '/people/trinav.jpeg',
-    description: 'Their info and the buttons link to their linkedin, insta or whatever.',
-  },
-  {
-    name: 'Indrajit Banerjee - Advisor',
-    image: '/fruit-2.jpg',
-    description: 'Their info and the buttons link to their linkedin, insta or whatever.',
+    description: 'Seattle, WA',
   },
   {
     name: 'Alyssa Dhanji - Business/Marketing Team',
-    image: '/fruit-3.jpg',
-    description: 'Their info and the buttons link to their linkedin, insta or whatever.',
+    image: '/people/alyssa.png',
+    description: 'Toronto, Canada',
   },
   {
     name: 'Anna Zhang - Business/Marketing Team',
-    image: '/fruit-2.jpg',
-    description: 'Their info and the buttons link to their linkedin, insta or whatever.',
+    image: '/people/Anna.png',
+    description: 'Toronto, Canada',
   },
   {
     name: 'Nikolay Li - Development Team',
-    image: '/fruit-3.jpg',
-    description: 'Their info and the buttons link to their linkedin, insta or whatever.',
+    image: '/people/Nikolay.png',
+    description: 'Seattle, WA',
   },
-  {
-    name: 'Saurish Srivastava - Development Team',
-    image: '/fruit-2.jpg',
-    description: 'A subheading for this section, as long or as short as you like. Their info and the buttons link to their linkedin, insta or whatever.',
-  },
+  // {
+  //   name: 'Saurish Srivastava - Development Team',
+  //   image: '/fruit-2.jpg',
+  //   description: 'Seattle, WA',
+  // },
   {
     name: 'Aarav Kumar - Development Team',
-    image: '/fruit-3.jpg',
-    description: 'Their info and the buttons link to their linkedin, insta or whatever.',
+    image: '/people/aarav.png',
+    description: 'Seattle, WA',
   },
 ];
 
 export default function TeamPage() {
   return (
     <main className={styles.container}>
-      <section className={styles.heroSection}>
-        <Image
-          src="/team-hero.jpg"
-          alt="Team Banner"
-          width={1200}
-          height={400}
-          className={styles.heroImage}
-        />
-        <div className={styles.heroOverlay}>
-          <h1 className={styles.heroTitle}>Our Team</h1>
-          <p className={styles.heroSubtitle}>The group of people making it happen</p>
-          <a href="https://www.instagram.com/pitchpanel/" className={styles.heroButton}>Insta</a>
+      {/* Clean header section */}
+      <section className={styles.header}>
+        <h1 className={styles.heroTitle}>Our Team</h1>
+        <p className={styles.heroSubtitle}>The group of people making it happen</p>
+        <div className={styles.buttons}>
+          <a href="https://www.instagram.com/pitchpanel/" target="_blank" rel="noopener noreferrer" className={styles.primaryButton}>
+            Instagram
+          </a>
+          <a href="https://www.linkedin.com/company/pitchpanel" target="_blank" rel="noopener noreferrer" className={styles.secondaryButton}>
+            LinkedIn
+          </a>
         </div>
       </section>
 
@@ -72,10 +66,6 @@ export default function TeamPage() {
             <div className={styles.memberInfo}>
               <h2>{member.name}</h2>
               <p>{member.description}</p>
-              <div className={styles.buttons}>
-                <button className={styles.primaryButton}>Button</button>
-                <button className={styles.secondaryButton}>Secondary button</button>
-              </div>
             </div>
           </div>
         ))}

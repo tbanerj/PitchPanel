@@ -16,7 +16,7 @@ import warnings
 warnings.filterwarnings('ignore')
 from scipy.spatial.distance import cdist
 from librosa.sequence import dtw as librosa_dtw
-from midiutil import MIDIFile
+
 
 NOTE_FEEDBACK = {
     "pitch": [
@@ -38,58 +38,46 @@ NOTE_FEEDBACK = {
         (8, 10, "Clear, precise articulation and diction.")
     ]
 }
-def extract_notes_from_sheetmusic(sheet_image_path):
+
+def extract_reference_pitches_from_sheetmusic(sheet_image_path):
     """
-    Uses SheetVision to extract notes from sheet music image
-    Returns: list of dictionaries with note info (pitch, duration, timing)
+    Uses SheetVision to generate MIDI and extract pitch names from the MIDI file.
+    Returns: List of pitch names like ['C4', 'E4', 'G4']
     """
     sheetvision_path = Path(__file__).parent / "SheetVision" / "main.py"
-    
+    midi_output_path = Path(__file__).parent / "SheetVision" / "output.mid"  # Adjust if SheetVision uses a different name
+
     try:
-        # Run SheetVision as a subprocess
+        # Run SheetVision and generate MIDI
         result = subprocess.run(
             [sys.executable, str(sheetvision_path), sheet_image_path],
             capture_output=True,
             text=True,
             check=True
         )
-        
-        # Parse SheetVision's output
-        notes = []
-        current_time = 0.0
-        tempo = 120  # Default tempo (can be adjusted if SheetVision provides it)
-        
-        for line in result.stdout.split('\n'):
-            if "note" in line.lower():  # Example line: "C4 4,8" (note + duration)
-                parts = line.strip().split()
-                if len(parts) >= 2:
-                    # Convert duration to seconds (simplified - assumes 4/4 time)
-                    duration_code = parts[1]
-                    if duration_code == "1":  # Whole note
-                        duration_sec = 4 * (60/tempo)
-                    elif duration_code == "2":  # Half note
-                        duration_sec = 2 * (60/tempo)
-                    elif duration_code == "4,8":  # Quarter or eighth
-                        duration_sec = (60/tempo) if len(notes) == 0 else (60/tempo)/2
-                    
-                    notes.append({
-                        "pitch": parts[0],  # Note name (e.g., "C4")
-                        "duration_code": duration_code,
-                        "duration_sec": duration_sec,
-                        "start_time": current_time,
-                        "end_time": current_time + duration_sec
-                    })
-                    current_time += duration_sec
-        
-        return notes
-    
+
+        # Load MIDI file
+        if not midi_output_path.exists():
+            print(f"[ERROR] MIDI output file not found at: {midi_output_path}")
+            return []
+
+        midi_data = pretty_midi.PrettyMIDI(str(midi_output_path))
+
+        # Extract all pitch numbers (int), then convert to note names (e.g., 60 → 'C4')
+        reference_notes = []
+        for instrument in midi_data.instruments:
+            for note in instrument.notes:
+                note_name = librosa.midi_to_note(note.pitch)
+                reference_notes.append(note_name)
+
+        return reference_notes
+
     except subprocess.CalledProcessError as e:
-        print(f"SheetVision error: {e.stderr}")
-        return None
+        print(f"[ERROR] SheetVision failed:\n{e.stderr}")
+        return []
     except Exception as e:
-        print(f"Sheet music analysis failed: {e}")
-        return None
-    
+        print(f"[ERROR] MIDI extraction failed: {e}")
+        return []
 
 def get_feedback(score, category):
     for low, high, msg in NOTE_FEEDBACK[category]:
@@ -277,7 +265,13 @@ def analyze_breath_support(y, sr, rms):
     """Comprehensive breath support analysis"""
     
     # 1. Energy consistency
-    rms_smooth = savgol_filter(rms, min(51, len(rms)//2*2+1), 3)
+    if len(rms) < 7:
+        rms_smooth = rms  # Too short to smooth
+    else:
+        # Make sure window length is odd and <= len(rms)
+        window_length = min(51, len(rms) if len(rms) % 2 == 1 else len(rms) - 1)
+    rms_smooth = savgol_filter(rms, window_length, 3)
+
     energy_variance = np.var(rms_smooth)
     energy_consistency = np.clip(10 - energy_variance * 100, 0, 10)
     
@@ -468,106 +462,118 @@ def score_analysis_metrics(f0, times, y, sr, rms, reference_notes=None, debug=Fa
             artic_score, contrast_score, formant_score, hnr_score, 
             plosive_score, dtw_debug)
 
-def analyze_singing_ai(file_path, reference_notes=None, sheet_image_path=None, sr=22050, debug=False):
-    """Main analysis function now supporting sheet music input and debug info"""
+def extract_reference_pitches_from_sheetmusic(sheet_image_path):
+    """
+    Simplified version of SheetVision integration.
+    Extracts only the pitch names from a sheet music image.
     
-    # Initialize all plot variables to None
+    Returns: List of pitch names (e.g., ["C4", "E4", "G4", "C5"])
+    """
+    sheetvision_path = Path(__file__).parent / "SheetVision" / "main.py"
+    
+    try:
+        result = subprocess.run(
+            [sys.executable, str(sheetvision_path), sheet_image_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+
+        reference_notes = []
+        for line in result.stdout.split('\n'):
+            if "note" in line.lower():  # crude filter; adjust if needed
+                parts = line.strip().split()
+                if parts:
+                    reference_notes.append(parts[0])  # Just the pitch name like "C4"
+        
+        return reference_notes
+
+    except subprocess.CalledProcessError as e:
+        print(f"SheetVision error: {e.stderr}")
+        return []
+    except Exception as e:
+        print(f"Sheet music pitch extraction failed: {e}")
+        return []
+
+
+def analyze_singing_ai(file_path, reference_notes=None, sheet_image_path=None, sr=22050, debug=False):
+    """Main analysis function for AI-based vocal feedback with optional reference pitch input from sheet music."""
+
     pitch_plot = None
     breath_plot = None
     diction_plot = None
-    
-    # If sheet music is provided, extract reference notes first
-    sheet_notes = None
-    if sheet_image_path and not reference_notes:
-        sheet_notes = extract_notes_from_sheetmusic(sheet_image_path)
-        if sheet_notes:
-            # Create time-aligned reference notes
-            reference_notes = []
-            for note in sheet_notes:
-                # For each note, add its pitch for the duration it should be sung
-                reference_notes.extend([note["pitch"]] * int(note["duration_sec"] * sr/512))
-    
+
+    # Extract reference pitches from sheet music image if provided (commented out)
+    # print(reference_notes)
+    # if sheet_image_path and not reference_notes:
+    #     reference_notes = extract_reference_pitches_from_sheetmusic(sheet_image_path)
+
     delete_after = not file_path.endswith(".wav")
     if delete_after:
         file_path = convert_to_wav(file_path)
 
     try:
-        # Load audio
         y, sr = librosa.load(file_path, sr=sr)
-        
-        # Extract fundamental frequency with better parameters
+
         f0, voiced_flag, voiced_probs = librosa.pyin(
-            y, 
-            fmin=float(librosa.note_to_hz('C2')), 
-            fmax=float(librosa.note_to_hz('C7')), 
+            y,
+            fmin=float(librosa.note_to_hz('C2')),
+            fmax=float(librosa.note_to_hz('C7')),
             sr=sr,
             frame_length=2048,
             hop_length=512,
             fill_na=np.nan
         )
         times = librosa.times_like(f0, sr=sr, hop_length=512)
-        
-        # Extract features
         rms = librosa.feature.rms(y=y, hop_length=512)[0]
-        centroid = librosa.feature.spectral_centroid(y=y, sr=sr, hop_length=512)[0]
-        
-        # Score analysis
+
         (pitch_score, breath_score, diction_score, total_score,
          acc_score, stab_score, vib_score,
          energy_score, dropout_score, phrase_score, timing_score,
-         bright_score, rolloff_score, onset_score, zcr_score, 
-         artic_score, contrast_score, formant_score, hnr_score, 
+         bright_score, rolloff_score, onset_score, zcr_score,
+         artic_score, contrast_score, formant_score, hnr_score,
          plosive_score, dtw_debug) = score_analysis_metrics(
             f0, times, y, sr, rms, reference_notes, debug=debug
         )
-        
-        # Create visualizations with error handling
+
         try:
-            # Pitch plot
             pitch_fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 6))
-            
-            # Main pitch contour
             ax1.plot(times, f0, label="Sung Pitch", color="blue", alpha=0.7)
-            if reference_notes:
-                ref_hz = [float(librosa.note_to_hz(note)) for note in reference_notes]
-                ref_interp = np.interp(times, np.linspace(0, times[-1], len(ref_hz)), ref_hz)
-                ax1.plot(times, ref_interp, label="Reference", linestyle="--", color="orange", linewidth=2)
-                
-                # Add measure markers if we have sheet music timing
-                if sheet_image_path and sheet_notes:
-                    for note in sheet_notes:
-                        ax1.axvline(x=note["start_time"], color='gray', linestyle=':', alpha=0.3)
+
+            if reference_notes and len(reference_notes) >= 2:
+                try:
+                    ref_hz = [float(librosa.note_to_hz(note)) for note in reference_notes]
+                    ref_interp = np.interp(times, np.linspace(0, times[-1], len(ref_hz)), ref_hz)
+
+                    ax1.plot(times, ref_interp, label="Expected Pitch (Reference)", linestyle="--", color="orange", linewidth=2)
+
+                    cents_deviation = 1200 * np.log2(f0 / ref_interp)
+                    ax2.plot(times, cents_deviation, label="Pitch Deviation (cents)", color="red", alpha=0.7)
+                    ax2.axhline(y=0, color='black', linestyle='-', alpha=0.5)
+                    ax2.axhline(y=50, color='gray', linestyle='--', alpha=0.5, label="±50 cents")
+                    ax2.axhline(y=-50, color='gray', linestyle='--', alpha=0.5)
+                    ax2.set_ylabel("Deviation (cents)")
+                    ax2.set_xlabel("Time (s)")
+                    ax2.legend()
+                    ax2.grid(True, alpha=0.3)
+                except Exception as e:
+                    print(f"[WARN] Could not plot reference notes: {e}")
+            else:
+                print("[INFO] No reference notes available — skipping expected pitch overlay.")
+
             ax1.set_title(f"Pitch Analysis (Score: {pitch_score:.1f}/10)")
             ax1.set_xlabel("Time (s)")
             ax1.set_ylabel("Frequency (Hz)")
             ax1.legend()
             ax1.grid(True, alpha=0.3)
-            
-            # Pitch accuracy over time
-            if reference_notes:
-                ref_hz = [float(librosa.note_to_hz(note)) for note in reference_notes]
-                ref_interp = np.interp(times, np.linspace(0, times[-1], len(ref_hz)), ref_hz)
-                deviation = np.abs(ref_interp - f0)
-                cents_deviation = 1200 * np.log2(f0 / ref_interp)
-                ax2.plot(times, cents_deviation, label="Pitch Deviation (cents)", color="red", alpha=0.7)
-                ax2.axhline(y=0, color='black', linestyle='-', alpha=0.5)
-                ax2.axhline(y=50, color='gray', linestyle='--', alpha=0.5, label="±50 cents")
-                ax2.axhline(y=-50, color='gray', linestyle='--', alpha=0.5)
-                ax2.set_ylabel("Deviation (cents)")
-                ax2.set_xlabel("Time (s)")
-                ax2.legend()
-                ax2.grid(True, alpha=0.3)
-            
+
             pitch_plot = create_plot_image(pitch_fig)
             plt.close(pitch_fig)
         except Exception as e:
             print(f"Error creating pitch plot: {e}")
 
         try:
-            # Breath support plot
             breath_fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 6))
-            
-            # Energy contour
             rms_times = librosa.times_like(rms, sr=sr, hop_length=512)
             ax1.plot(rms_times, rms, label="RMS Energy", color="green", alpha=0.7)
             energy_threshold = np.percentile(rms, 20)
@@ -576,31 +582,31 @@ def analyze_singing_ai(file_path, reference_notes=None, sheet_image_path=None, s
             ax1.set_ylabel("Energy")
             ax1.legend()
             ax1.grid(True, alpha=0.3)
-            
-            # Energy consistency
-            rms_smooth = savgol_filter(rms, min(51, len(rms)//2*2+1), 3)
+
+            if len(rms) < 7:
+                rms_smooth = rms
+            else:
+                window_len = min(51, len(rms) if len(rms) % 2 == 1 else len(rms) - 1)
+                rms_smooth = savgol_filter(rms, window_len, 3)
             ax2.plot(rms_times, rms_smooth, label="Smoothed Energy", color="darkgreen", alpha=0.7)
             ax2.set_xlabel("Time (s)")
             ax2.set_ylabel("Smoothed Energy")
             ax2.legend()
             ax2.grid(True, alpha=0.3)
-            
+
             breath_plot = create_plot_image(breath_fig)
             plt.close(breath_fig)
         except Exception as e:
             print(f"Error creating breath plot: {e}")
 
         try:
-            # Diction plot
             diction_plot = create_diction_plot(y, sr, diction_score)
         except Exception as e:
             print(f"Error creating diction plot: {e}")
 
-        # Cleanup
         if delete_after:
             cleanup_temp_uploads()
 
-        # Enhance feedback with sheet music info if available
         feedback = {
             "pitch_score": round(pitch_score, 1),
             "breath_score": round(breath_score, 1),
@@ -638,14 +644,6 @@ def analyze_singing_ai(file_path, reference_notes=None, sheet_image_path=None, s
             "reference_notes": reference_notes,
             "dtw_debug": dtw_debug,
         }
-
-        # Add sheet music info if available
-        if sheet_image_path and sheet_notes:
-            feedback["sheet_music"] = {
-                "note_count": len(sheet_notes),
-                "total_duration": sum(n["duration_sec"] for n in sheet_notes),
-                "notes": sheet_notes
-            }
 
         return feedback
 
