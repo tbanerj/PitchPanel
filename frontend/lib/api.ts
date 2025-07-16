@@ -1,5 +1,20 @@
 import axios from "axios";
 
+// Configure axios instance for reuse
+const apiClient = axios.create({
+  baseURL: "http://localhost:8000",
+  timeout: 30000, // 30 seconds timeout
+  headers: {
+    "Accept": "application/json",
+  },
+});
+
+// Add CORS support for the client
+apiClient.interceptors.request.use(config => {
+  config.withCredentials = true;
+  return config;
+});
+
 export async function analyzeFile(
   audioFile: File,
   options?: {
@@ -8,8 +23,6 @@ export async function analyzeFile(
   }
 ) {
   const formData = new FormData();
-  
-  // Use 'audio_file' to match FastAPI's expected parameter name
   formData.append("audio_file", audioFile);
   
   if (options?.referenceNotes) {
@@ -21,26 +34,29 @@ export async function analyzeFile(
   }
 
   try {
-    const response = await axios.post("http://localhost:8000/analyze", formData, {
-      // Let axios set the content-type automatically
-      headers: {
-        "Accept": "application/json",
+    const response = await apiClient.post("/analyze", formData, {
+      // For tracking upload progress:
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / (progressEvent.total || 1)
+        );
+        console.log(`Upload progress: ${percentCompleted}%`);
       },
     });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorData = error.response?.data;
-      console.error("API Error Details:", {
+      console.error("API Error:", {
         status: error.response?.status,
         data: errorData,
-        headers: error.response?.headers,
+        config: error.config,
       });
       
       throw new Error(
         errorData?.detail || 
         errorData?.message || 
-        "Analysis failed. Please check your input and try again."
+        `Analysis failed (${error.response?.status || "no status"}). Please try again.`
       );
     }
     throw error;
