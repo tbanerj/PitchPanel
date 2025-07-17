@@ -188,3 +188,8 @@ async def health_check():
         "status": "healthy",
         "environment": os.getenv("ENVIRONMENT", "development")
     }
+
+
+@app.options("/analyze")
+async def analyze_options():
+    return {"message": "OK"}
