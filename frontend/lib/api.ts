@@ -2,12 +2,14 @@ import axios from "axios";
 
 // Configure axios instance for reuse
 const apiClient = axios.create({
-  baseURL: "http://localhost:8000",
-  timeout: 30000, // 30 seconds timeout
+  baseURL: "https://localhost:8000", // NOTE: https
+  timeout: 30000,
   headers: {
-    "Accept": "application/json",
+    Accept: "application/json",
   },
+  withCredentials: true, // This can go here instead of an interceptor
 });
+
 
 // Add CORS support for the client
 apiClient.interceptors.request.use(config => {
