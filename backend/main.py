@@ -30,10 +30,12 @@ ALLOWED_ORIGINS = [
     "http://127.0.0.1:443",
     "https://127.0.0.1:443",
     "https://pitchpanel.org",
+    "http://192.168.0.111:3000", #Trinav computer
     "https://www.pitchpanel.org",
     "https://pitchpanel.org:8000",
     "http://pitchpanel.org:8000"
-    ]
+
+]
 
 
 
