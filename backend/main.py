@@ -34,6 +34,7 @@ ALLOWED_ORIGINS = [
     "https://www.pitchpanel.org",
     "https://pitchpanel.org:8000",
     "http://pitchpanel.org:8000",
+    "https://0.0.0.0:8000",
     "https://localhost:8000",  # Local dev server
 ]
 
