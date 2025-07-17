@@ -6,6 +6,11 @@ __pycache__/
 venv/
 env/
 
+ssl/
+
+*.cer
+*.key
+
 # Ignore environment variable files
 .env
 
