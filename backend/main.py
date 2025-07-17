@@ -33,8 +33,7 @@ ALLOWED_ORIGINS = [
     "https://www.pitchpanel.org",
     "https://pitchpanel.org:8000",
     "http://pitchpanel.org:8000"
-
-]
+    ]
 
 
 
