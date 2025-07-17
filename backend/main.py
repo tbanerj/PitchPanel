@@ -25,10 +25,11 @@ app = FastAPI(
 IS_DEVELOPMENT = os.getenv("ENVIRONMENT", "development") == "development"
 
 ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Default Next.js dev server
-    "http://127.0.0.1:3000", 
+    "https://localhost:443",  # Default Next.js dev server
+    "https://127.0.0.1:443", 
     "pitchpanel.org"
-    "https://www.pitchpanel.org" # Alternative localhost
+    "https://www.pitchpanel.org"
+    "https://pitchpanel.org" # Alternative localhost
 ]
 
 
