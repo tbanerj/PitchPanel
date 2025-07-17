@@ -33,8 +33,8 @@ ALLOWED_ORIGINS = [
     "http://192.168.0.111:3000", #Trinav computer
     "https://www.pitchpanel.org",
     "https://pitchpanel.org:8000",
-    "http://pitchpanel.org:8000"
-
+    "http://pitchpanel.org:8000",
+    "https://localhost:8000",  # Local dev server
 ]
 
 
