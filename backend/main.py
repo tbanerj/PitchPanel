@@ -26,27 +26,25 @@ IS_DEVELOPMENT = os.getenv("ENVIRONMENT", "development") == "development"
 
 ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Default Next.js dev server
-    "http://127.0.0.1:3000",  # Alternative localhost
+    "http://127.0.0.1:3000", 
+    "pitchpanel.org"
+    "https://www.pitchpanel.org" # Alternative localhost
 ]
 
-if not IS_DEVELOPMENT:
-    ALLOWED_ORIGINS.extend([
-        "https://pitchpanel.org",
-        "https://www.pitchpanel.org",
-    ])
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=ALLOWED_ORIGINS,  # Make sure this is a list of strings, not a single string
     allow_credentials=True,
-    allow_methods=["POST"],  # Only needed method for this API
+    allow_methods=["POST", "OPTIONS"],  # Include OPTIONS for preflight requests
     allow_headers=[
         "Content-Type",
         "Authorization",
         "Accept"
     ],
     expose_headers=["Content-Disposition"],
-    max_age=600  # 10 minutes
+    max_age=600  # 10 minutes (preflight cache duration)
 )
 
 # ====================== Constants & Helpers ======================
