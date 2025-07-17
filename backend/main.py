@@ -37,13 +37,9 @@ ALLOWED_ORIGINS = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,  # Make sure this is a list of strings, not a single string
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["POST", "OPTIONS"],  # Include OPTIONS for preflight requests
-    allow_headers=[
-        "Content-Type",
-        "Authorization",
-        "Accept"
-    ],
+    allow_headers=["*"],
     expose_headers=["Content-Disposition"],
     max_age=600  # 10 minutes (preflight cache duration)
 )
