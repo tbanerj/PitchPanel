@@ -16,12 +16,12 @@ const teamMembers = [
   },
   {
     name: 'Anna Zhang - Business/Marketing Team',
-    image: '/people/Anna.png',
+    image: '/people/anna.png',
     description: 'Toronto, Canada',
   },
   {
     name: 'Nikolay Li - Development Team',
-    image: '/people/Nikolay.png',
+    image: '/people/nikolay.png',
     description: 'Seattle, WA',
   },
   // {
