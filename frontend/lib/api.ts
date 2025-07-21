@@ -3,10 +3,10 @@ import axios from "axios";
 // Configure axios instance for reuse
 const apiClient = axios.create({
   baseURL: "https://pitchpanel.org:8000", // NOTE: https
-  timeout: 30000,
   headers: {
     Accept: "application/json",
   },
+  timeout: 1000000,
   withCredentials: true, // This can go here instead of an interceptor
 });
 
