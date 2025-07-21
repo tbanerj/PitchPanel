@@ -72,7 +72,7 @@ cd backend
 python -m venv venv
 source venv/bin/activate  # or .\venv\Scripts\activate on Windows
 pip install -r requirements.txt
-uvicorn main:app --reload
+nohup uvicorn main:app --host 0.0.0.0 --port 8000 --ssl-keyfile=../frontend/ssl/key.key --ssl-certfile=../frontend/ssl/cert.cer > uvicorn.log 2>&1 &
 ```
 
 API will be available at: `http://localhost:8000/docs`
@@ -82,7 +82,8 @@ API will be available at: `http://localhost:8000/docs`
 ```bash
 cd newfrontend
 npm install
-npm run dev
+npm run build
+sudo nohup npm run start > output.log 2>&1 &
 ```
 
 App will run at: `http://localhost:3000`
