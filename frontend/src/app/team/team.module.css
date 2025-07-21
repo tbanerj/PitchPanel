@@ -82,11 +82,6 @@
   margin-bottom: 12px;
 }
 
-.buttons {
-  display: flex;
-  gap: 12px;
-}
-
 .primaryButton {
   background-color: #4b0082;
   color: white;
@@ -123,20 +118,51 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
+/* ---------- MOBILE RESPONSIVE ---------- */
 @media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  .membersGrid {
+    padding: 32px 16px;
+  }
+
   .memberCard {
     flex-direction: column;
     text-align: center;
+    padding: 20px;
+    gap: 16px;
   }
 
   .memberImage {
     width: 100%;
-    max-width: 300px;
+    max-width: 220px;
     height: auto;
+    margin: 0 auto;
+  }
+
+  .memberInfo h2 {
+    font-size: 1.25rem;
+  }
+
+  .memberInfo p {
+    font-size: 0.95rem;
   }
 
   .buttons {
     justify-content: center;
     flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    text-align: center;
   }
 }
