@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://pitchpanel.org
+
+# Sitemaps
+Sitemap: https://pitchpanel.org/sitemap.xml
