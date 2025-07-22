@@ -24,8 +24,7 @@ export default function AboutPage() {
 
         <section className={styles.imageGridSection}>
           <div className={styles.imageGrid}>
-            {/* { <Image src="/fruit-bread.jpg" alt="bread and wine" width={600} height={400} className={styles.image} /> */}
-            {/* <Image src="/apricots-bottle.jpg" alt="apricots and bottle" width={600} height={400} className={styles.image} /> */} */}
+            
           </div>
         </section>
 
