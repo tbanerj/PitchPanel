@@ -15,7 +15,7 @@ export default function AboutPage() {
         <section className={styles.storySection}>
           <h2 className={styles.sectionTitle}>Our Story</h2>
           <p className={styles.paragraph}>
-            Vocal training should be accessible to everyone — but for many singers, it isn’t. Traditional voice lessons can be expensive, hard to access in rural areas, and difficult to fit into a busy schedule. Feedback often comes just once a week, leaving students unsure if they’re practicing correctly. And for beginners, knowing where to start can be overwhelming. We created PitchPanel to change that. PitchPanel is a digital vocal coaching assistant designed to break down barriers in music education. It gives singers instant, personalized feedback from home — no private teacher, expensive equipment, or musical background required. Our tool is designed to be intuitive for beginners, yet powerful enough to support serious musicians. Whether you're just starting your journey or looking to sharpen your skills between lessons, PitchPanel gives you the clarity and encouragement to grow as a singer — on your terms.
+        Vocal training should be accessible to everyone — but for many singers, it isn’t. Traditional voice lessons can be expensive, hard to access in rural areas, and difficult to fit into a busy schedule. Feedback often comes just once a week, leaving students unsure if they’re practicing correctly. And for beginners, knowing where to start can be overwhelming. We created PitchPanel to change that. PitchPanel is a digital vocal coaching assistant designed to break down barriers in music education. It gives singers instant, personalized feedback from home — no private teacher, expensive equipment, or musical background required. Our goal isn’t to replace voice teachers, but to support them by helping students make the most of their practice time between lessons. The tool is designed to be intuitive for beginners, yet powerful enough to support serious musicians. Whether you're just starting your journey or looking to sharpen your skills between lessons, PitchPanel gives you the clarity and encouragement to grow as a singer — on your terms.
           </p>
           <p className={styles.paragraph}>
             Our team brings together musicians, engineers, and educators passionate about expanding access to artistic tools. We believe that music education should be as flexible and adaptive as the people who pursue it.
@@ -24,8 +24,8 @@ export default function AboutPage() {
 
         <section className={styles.imageGridSection}>
           <div className={styles.imageGrid}>
-            {/* <Image src="/fruit-bread.jpg" alt="bread and wine" width={600} height={400} className={styles.image} />
-            <Image src="/apricots-bottle.jpg" alt="apricots and bottle" width={600} height={400} className={styles.image} /> */}
+            {/* { <Image src="/fruit-bread.jpg" alt="bread and wine" width={600} height={400} className={styles.image} /> */}
+            {/* <Image src="/apricots-bottle.jpg" alt="apricots and bottle" width={600} height={400} className={styles.image} /> */} */}
           </div>
         </section>
 
