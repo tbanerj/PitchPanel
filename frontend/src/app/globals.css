@@ -1,4 +1,14 @@
+
 /* globals.css */
+body{
+
+  overflow-x: hidden;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -7,7 +17,11 @@ body {
   font-family: 'Segoe UI', sans-serif;
   color: #1f2937;
 }
-
+@media (max-width: 768px){
+  html, body {
+    overflow-x: hidden;
+  }
+}
 .analyzer-container {
   max-width: 720px;
   margin: 60px auto;

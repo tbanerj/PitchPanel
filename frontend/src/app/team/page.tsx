@@ -24,11 +24,11 @@ const teamMembers = [
     image: '/people/nikolay.png',
     description: 'Seattle, WA',
   },
-  // {
-  //   name: 'Saurish Srivastava - Development Team',
-  //   image: '/fruit-2.jpg',
-  //   description: 'Seattle, WA',
-  // },
+  {
+    name: 'Saurish Srivastava - Development Team',
+    image: '/fruit-2.jpg',
+    description: 'Seattle, WA',
+  },
   {
     name: 'Aarav Kumar - Development Team',
     image: '/people/aarav.png',

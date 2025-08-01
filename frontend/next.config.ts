@@ -27,6 +27,17 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  images: {
+    domains: [
+      "singersroom.com",
+      "antares-wp-media.sfo2.digitaloceanspaces.com",
+      "png.pngtree.com",
+      "https://stock.adobe.com",
+      "t4.ftcdn.net",
+      "miro.medium.com"
+    ]
+  }
+
   // Other Next.js config options can go here
 };
 

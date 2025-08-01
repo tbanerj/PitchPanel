@@ -39,60 +39,80 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <>
-    <Script
-        id="json-ld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
-            name: "PitchPanel",
-            url: "https://pitchpanel.org",
-            description:
-              "PitchPanel is an AI vocal coach that provides feedback on pitch, breath, and diction.",
-            applicationCategory: "Music",
-            operatingSystem: "Web",
-          }),
-        }}
-      />
-    <main className={styles.container}>
-
-      {/* Title Section */}
-      <section className={styles.titleSection}>
-        <h1 className={styles.title}>What is PitchPanel?</h1>
-        <p className={styles.subtitle}>
-          PitchPanel is your personal AI voice coach — a simple, web-based tool that gives singers instant feedback on their pitch, breath support, and diction.
-        </p>
-      </section>
-
-      {/* Screenshot Image */}
-      <section className={styles.imageSection}>
-        <Image
-          src="/analyzerScreenshot.png" // Replace with actual path to product screenshot
-          alt="PitchPanel Product Screenshot"
-          width={800}
-          height={450}
-          className={styles.image}
+      <>
+        <Script
+            id="json-ld"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                name: "PitchPanel",
+                url: "https://pitchpanel.org",
+                description:
+                    "PitchPanel is an AI vocal coach that provides feedback on pitch, breath, and diction.",
+                applicationCategory: "Music",
+                operatingSystem: "Web",
+              }),
+            }}
         />
-      </section>
+        <main className={styles.container}>
 
-      {/* Summary Sentence */}
-      <section className={styles.summarySection}>
-        <p className={styles.summary}>
-          It combines real-time vocal analysis, ML-based scoring, and personalized feedback into a lightweight web app.
-        </p>
-      </section>
+          <section className={styles.heroBanner}>
+            <Image
+                src="https://miro.medium.com/v2/1*bsa4PuoSW-trOsnWbezXgw.jpeg"
+                alt="Colorful audio wave"
+                fill
+                className={styles.heroImage}
+                priority
+            />
+            <div className={styles.heroOverlay}>
+              <h1 className={styles.heroTitle}>Master Your Voice with AI</h1>
+              <p className={styles.heroSubtitle}>
+                Real-time feedback. Smarter singing. Built for every vocalist.
+              </p>
+            </div>
+          </section>
 
-      {/* Product Link */}
-      <section className={styles.linkSection}>
-        <Link href="/product">
-          <button className={styles.learnMoreButton}>Try PitchPanel</button>
-        </Link>
-      </section>
 
-    </main>
-    </>
+          {/* Title Section */}
+          <section className={styles.titleSection}>
+            <h1 className={styles.title}>What is PitchPanel?</h1>
+            <p className={styles.subtitle}>
+              PitchPanel is your personal AI voice coach — a simple, web-based tool that gives singers instant feedback
+              on their pitch, breath support, and diction.
+            </p>
+          </section>
+
+          {/* Screenshot Image */}
+          <section className={styles.imageSection}>
+            <Image
+                src="/analyzerScreenshot.png"
+                alt="PitchPanel Product Screenshot"
+                width={800}
+                height={450}
+                className={styles.image}
+            />
+          </section>
+
+          {/* Summary Sentence */}
+          <section className={styles.summarySection}>
+            <p className={styles.summary}>
+              It combines real-time vocal analysis, ML-based scoring, and personalized feedback into a lightweight web
+              app.
+            </p>
+          </section>
+
+          {/* Product Link */}
+          <section className={styles.linkSection}>
+            <Link href="/product">
+              <button className={styles.learnMoreButton}>Try PitchPanel</button>
+            </Link>
+          </section>
+
+        </main>
+
+      </>
 
   );
 }
