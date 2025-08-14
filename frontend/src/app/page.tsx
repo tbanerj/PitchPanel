@@ -56,11 +56,12 @@ export default function HomePage() {
               }),
             }}
         />
+
         <main className={styles.container}>
 
           <section className={styles.heroBanner}>
             <Image
-                src="https://miro.medium.com/v2/1*bsa4PuoSW-trOsnWbezXgw.jpeg"
+                src="/img1.jpg"
                 alt="Colorful audio wave"
                 fill
                 className={styles.heroImage}
@@ -75,7 +76,6 @@ export default function HomePage() {
           </section>
 
 
-          {/* Title Section */}
           <section className={styles.titleSection}>
             <h1 className={styles.title}>What is PitchPanel?</h1>
             <p className={styles.subtitle}>
@@ -84,7 +84,6 @@ export default function HomePage() {
             </p>
           </section>
 
-          {/* Screenshot Image */}
           <section className={styles.imageSection}>
             <Image
                 src="/analyzerScreenshot.png"
@@ -95,7 +94,6 @@ export default function HomePage() {
             />
           </section>
 
-          {/* Summary Sentence */}
           <section className={styles.summarySection}>
             <p className={styles.summary}>
               It combines real-time vocal analysis, ML-based scoring, and personalized feedback into a lightweight web
@@ -103,7 +101,6 @@ export default function HomePage() {
             </p>
           </section>
 
-          {/* Product Link */}
           <section className={styles.linkSection}>
             <Link href="/product">
               <button className={styles.learnMoreButton}>Try PitchPanel</button>

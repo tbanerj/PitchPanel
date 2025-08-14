@@ -26,7 +26,7 @@ const teamMembers = [
   },
   {
     name: 'Saurish Srivastava - Development Team',
-    image: '/fruit-2.jpg',
+    image: '/people/Saurish.jpg',
     description: 'Seattle, WA',
   },
   {

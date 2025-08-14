@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600&display=swap');
+/* Navbar.module.css */
 .navbar {
   width: 100%;
   background-color: #ffffff;
-  font-family: 'Sora', sans-serif;
+  font-family: 'Inter', sans-serif;
   position: sticky;
   top: 0;
   z-index: 1000;

@@ -34,7 +34,8 @@ const nextConfig: NextConfig = {
       "png.pngtree.com",
       "https://stock.adobe.com",
       "t4.ftcdn.net",
-      "miro.medium.com"
+      "miro.medium.com",
+      "www.wipo.int"
     ]
   }
 

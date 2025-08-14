@@ -1,5 +1,13 @@
+:root {
+  --soft-pink: #fcd7f7;
+  --bright-pink: #fba2f7;
+  --white-glass: rgba(255, 255, 255, 0.25);
+  --border-pink: rgba(251, 162, 247, 0.6);
+  --shadow-pink: rgba(251, 162, 247, 0.2);
+  --body-gray: #555;
+}
 
-/* globals.css */
+
 body{
 
   overflow-x: hidden;

@@ -15,13 +15,13 @@ export default function AboutPage() {
                 From bedrooms to Broadway — empowering voices through technology, accessibility, and innovation.
               </p>
             </div>
-            <Image
-                src="https://singersroom.com/wp-content/uploads/2023/11/15-Best-Male-Singers-of-All-Time.jpg"
-                alt="Singer using PitchPanel"
-                width={960}
-                height={480}
-                className={styles.heroImage}
-            />
+            {/*<Image*/}
+            {/*    src="https://singersroom.com/wp-content/uploads/2023/11/15-Best-Male-Singers-of-All-Time.jpg"*/}
+            {/*    alt="Singer using PitchPanel"*/}
+            {/*    width={960}*/}
+            {/*    height={480}*/}
+            {/*    className={styles.heroImage}*/}
+            {/*/>*/}
           </section>
 
           {/* Mission Cards Section */}
@@ -53,7 +53,7 @@ export default function AboutPage() {
           <section className={styles.storySection}>
             <div className={styles.storyGrid}>
               <Image
-                  src="https://antares-wp-media.sfo2.digitaloceanspaces.com/wp-content/uploads/20221212223752/home-recording-sound-like-professional-studio-04-1024x683.webp"
+                  src="/pic1.png"
                   alt="Singer recording at home"
                   width={1000}
                   height={400}
