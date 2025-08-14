@@ -1,8 +1,9 @@
-/* Navbar.module.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap');
 .navbar {
   width: 100%;
   background-color: #ffffff;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   position: sticky;
   top: 0;
   z-index: 1000;
