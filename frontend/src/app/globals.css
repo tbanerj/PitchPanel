@@ -1,3 +1,8 @@
+/* Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;800&display=swap');
+
+
 :root {
   --soft-pink: #fcd7f7;
   --bright-pink: #fba2f7;
@@ -11,6 +16,7 @@
 body{
 
   overflow-x: hidden;
+  overflow-y: scroll;
 }
 *,
 *::before,
@@ -22,7 +28,7 @@ body {
   margin: 0;
   padding: 0;
   background: linear-gradient(to bottom right, #fdfdfd, #f3e8ff);
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Manrope', sans-serif;
   color: #1f2937;
 }
 @media (max-width: 768px){
