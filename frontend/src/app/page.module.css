@@ -1,304 +1,714 @@
+/* Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;800&display=swap');
+
 .page {
-  --gray-rgb: 0, 0, 0;
-  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
-  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-  --button-primary-hover: #6b21a8;
-  --button-secondary-hover: #ede9fe;
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
-  min-height: 100vh;
-  width: 100vw;
-  padding: 80px;
-  gap: 64px;
-  font-family: var(--font-geist-sans);
-  background-color: #f9f5ff;
-  animation: fadeIn 0.6s ease-in;
+  --background-light: #f7f9fc;
+  --text-primary: #1a202c;
+  --text-secondary: #b0c1df;
+  --brand-blue: #0077b6;
+  --brand-green: #2cb67d;
+  --card-light: rgba(255, 255, 255, 0.7);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
 }
 
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-.main {
-
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  grid-row-start: 2;
-  animation: slideUp 0.6s ease-out;
-}
-
-@keyframes slideUp {
-  0% { transform: translateY(30px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-.container {
-  align-items: center;
-  justify-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.titleSection {
-  text-align: center;
-  margin-bottom: 64px;
-  animation: fadeIn 0.8s ease-in;
-}
-
-.title {
-  font-size: 3rem;
-  font-weight: 800;
-  color: #4b0082;
-  letter-spacing: -0.5px;
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  color: #6b21a8;
-  margin-top: 8px;
-}
-
-.sectionHeader {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #4b0082;
-}
-
-.purposeSection {
-  margin-bottom: 80px;
-}
-
-.purposeGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  align-items: flex-start;
-  animation: fadeIn 0.6s ease-in;
-}
-
-.textColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.card {
-  background-color: white;
-  border: 1px solid #d8b4fe;
-  border-radius: 12px;
-  padding: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.1);
-}
-
-.card h3 {
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: #6b21a8;
-  font-size: 1.1rem;
-}
-
-.card ul {
-  list-style: disc;
-  padding-left: 20px;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  color: #4b0082;
-}
-
-.card p {
-  color: #4b0082;
-  font-size: 0.95rem;
-}
-
-.placeholder {
-  font-style: italic;
-  color: #999;
-}
-
-.imageColumn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.image {
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  object-fit: cover;
-  width: 100%;
-  height: auto;
-  transition: transform 0.3s ease;
-}
-
-.image:hover {
-  transform: scale(1.02);
-}
-
-.productSection {
-  text-align: center;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding-top: 40px;
-}
-
-.bannerImage {
-  border-radius: 12px;
-  margin-bottom: 24px;
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.bannerImage:hover {
-  transform: scale(1.01);
-}
-
-.learnMoreButton {
-  background: linear-gradient(to right, #8b5cf6, #7c3aed);
-  color: white;
-  font-weight: 600;
-  padding: 12px 24px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.learnMoreButton:hover {
-  transform: scale(1.05);
-}
-
-@media (max-width: 600px) {
-  .container {
-    padding: 32px;
-    padding-bottom: 80px;
-  }
-
-  .main {
-    align-items: center;
-  }
-
-  .title {
-    font-size: 2.2rem;
-  }
-
-  .main ol {
-    text-align: center;
-  }
-
-  .ctas {
-    flex-direction: column;
-  }
-
-  .ctas a {
-    font-size: 14px;
-    height: 40px;
-    padding: 0 16px;
-  }
-
-  a.secondary {
-    min-width: auto;
-  }
-
-  .footer {
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-}
-.heroBanner {
-  position: relative;
-  width: 100vw;
-  height: 70vh;
-  overflow: hidden;
-  margin-bottom: 64px;
-}
-
-/* Remove Image shifting issues */
-.heroImage {
-  object-fit: cover;
-  z-index: 1;
-
-}
-
-
-.heroOverlay {
+/* Subtle random dimming overlay */
+.container::before {
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
+  pointer-events: none; /* so it doesn’t block clicks */
+  background: radial-gradient(circle at 20% 30%, rgba(0, 0, 0, 0.05), transparent 50%),
+  radial-gradient(circle at 70% 60%, rgba(0, 0, 0, 0.04), transparent 50%),
+  radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.03), transparent 50%),
+  radial-gradient(circle at 80% 20%, rgba(0, 0, 0, 0.02), transparent 50%);
+  z-index: 0;
+}
+
+.container {
+  width: 100vw;
+  min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
+  align-items: center;
+  background-color: var(--background-light);
+  font-family: 'Urbanist', sans-serif;
+  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.bgGlow {
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  background-color: #d1e2ff; /* Lighter, subtle blue */
+  opacity: 0.8;
+  filter: blur(150px);
+  top: -150px;
+  left: -200px;
+  animation: glowMove 10s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+@keyframes glowMove {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(150px, 150px) rotate(15deg); }
+}
+
+/* --- Hero Section --- */
+.heroSection {
+  width: 100%;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8rem 2rem;
   text-align: center;
-  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.heroContent {
+  animation: fadeIn 1s ease-out;
 }
 
 .heroTitle {
-  font-size: 3rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 16px;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
+  animation: slideInUp 1s ease-out;
 }
 
 .heroSubtitle {
-  font-size: 1.25rem;
-  color: #ddd6fe;
-  margin-bottom: 24px;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: var(--text-secondary);
   max-width: 700px;
+  margin: 0 auto 2.5rem;
+  animation: slideInUp 1.2s ease-out;
 }
 
-/* RESPONSIVE */
+.ctaButton {
+  display: inline-block;
+  background-color: var(--brand-blue);
+  color: var(--text-secondary);
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  box-shadow: 0 10px 20px rgba(0, 119, 182, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: slideInUp 1.4s ease-out;
+}
+
+.ctaButton:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 119, 182, 0.3);
+}
+
+
 @media (max-width: 1024px) {
-  .heroTitle {
-    font-size: 2.5rem;
+  .heroSection {
+    padding: 6rem 1rem;
   }
 
-  .heroSubtitle {
-    font-size: 1.1rem;
-  }
 }
 
+.footer {
+  margin-top: 5000px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--text-primary);
+  font-family: 'Urbanist', sans-serif;
+  padding: 4rem 2rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.footerBrand h2 {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.footerBrand p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.footerLinks h3 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.footerLinks a {
+  display: block;
+  color: var(--text-secondary);
+  text-decoration: none;
+  margin-bottom: 0.3rem;
+  transition: color 0.2s ease;
+}
+
+.footerLinks a:hover {
+  color: var(--brand-blue);
+}
+
+.footerBottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
-  .heroTitle {
-    font-size: 2rem;
-  }
-
-  .heroSubtitle {
-    font-size: 1rem;
-    max-width: 90%;
+  .footerLinks {
+    flex-direction: column;
+    gap: 2rem;
   }
 }
+.glowContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 24px;
 
-@media (max-width: 480px) {
-  .heroTitle {
-    font-size: 1.6rem;
-  }
+  /* Dimmer white center */
+  background: rgba(255, 255, 255, 0.02);
 
-  .heroSubtitle {
-    font-size: 0.95rem;
-  }
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  position: relative;
+
+  /* Move + Rotate */
+  transform: translate(-600px, 60px) rotate(-20deg);
+
+  /* Outer glow (first white layer) */
+  box-shadow:
+          0 0 25px rgba(255, 255, 255, 0.9), /* outside glow */
+          inset 0 0 25px rgba(255, 255, 255, 0.15); /* subtle inner light */
 }
+
+/* Second white glow on inner border */
+.glowContainer::before {
+  content: "";
+  position: absolute;
+  inset: 8px; /* pulls inward to create inner ring */
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+          0 0 20px rgba(255, 255, 255, 0.8); /* inner glow */
+  pointer-events: none;
+}
+
+/* Subtle stormy blue shadow on bottom-right */
+/* Subtle stormy blue shadow on top-left with soft white glow on left */
+/* Subtle stormy blue shadow on bottom-right with soft white glow on left */
+/* Subtle stormy blue shadow on bottom-right with enhanced white glow on left */
+.glowContainer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  box-shadow:
+          12px 12px 30px rgba(70, 90, 150, 0.25),   /* soft blue bottom-right */
+          24px 24px 50px rgba(100, 130, 200, 0.15), /* lighter blue fade bottom-right */
+          -12px 0 35px rgba(255, 255, 255, 0.18);   /* enhanced soft white glow on left */
+  pointer-events: none;
+  z-index: -1;
+}
+
+.icon {
+  width: 60%;
+  height: 60%;
+  stroke: white;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 1))
+  drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+}
+
+/* Second Glow Container (replica of glowContainer) */
+.secondGlowContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  position: relative;
+
+  /* New position + rotation */
+  transform: translate(-420px, 150px) rotate(-10deg);
+
+  /* Outer glow (first white layer) */
+  box-shadow:
+          0 0 25px rgba(255, 255, 255, 0.9),
+          inset 0 0 25px rgba(255, 255, 255, 0.15);
+}
+
+/* Inner white glow on inner border */
+.secondGlowContainer::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+
+/* Soft stormy blue shadow + enhanced left white glow */
+.secondGlowContainer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  box-shadow:
+          12px 12px 30px rgba(70, 90, 150, 0.25),   /* soft blue bottom-right */
+          24px 24px 50px rgba(100, 130, 200, 0.15), /* lighter fade bottom-right */
+          -14px 0 40px rgba(255, 255, 255, 0.2);    /* slightly stronger left glow */
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Icon styling (shared with first container) */
+.secondGlowContainer .icon {
+  width: 60%;
+  height: 60%;
+  stroke: white;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 1))
+  drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+}
+/* Third Glow Container (replica of glowContainer) */
+.thirdGlowContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  position: relative;
+
+  /* New position + rotation: positive translation to the right */
+  transform: translate(-240px, -200px) rotate(15deg);
+
+  /* Outer glow (first white layer) */
+  box-shadow:
+          0 0 25px rgba(255, 255, 255, 0.9),
+          inset 0 0 25px rgba(255, 255, 255, 0.15);
+}
+
+/* Inner white glow on inner border */
+.thirdGlowContainer::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+
+/* Soft stormy blue shadow + enhanced left white glow */
+.thirdGlowContainer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  box-shadow:
+          -12px 12px 30px rgba(70, 90, 150, 0.25), /* bottom-left */
+          24px 24px 50px rgba(100, 130, 200, 0.15), /* softer bottom-left fade */
+          -12px 0 35px rgba(255, 255, 255, 0.18);  /* left-side white glow */
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Icon styling (shared) */
+.thirdGlowContainer .icon {
+  width: 60%;
+  height: 60%;
+  stroke: white;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 1))
+  drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+}
+
+/* --- FOURTH Glow Container (mirror of first) --- */
+/* --- FOURTH Glow Container (mirror X only of first) --- */
+/* --- FOURTH Glow Container (mirror X only of first) --- */
+/* --- FOURTH Glow Container (mirror X only of first) --- */
+.fourthGlowContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.02);
+  border: 2px solid rgba(255,255,255,0.7);
+  position: relative;
+  transform: translate(600px, -360px) rotate(20deg); /* only X flipped */
+  box-shadow:
+          0 0 25px rgba(255,255,255,0.9),
+          inset 0 0 25px rgba(255,255,255,0.15);
+}
+
+.fourthGlowContainer::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 0 20px rgba(255,255,255,0.8);
+  pointer-events: none;
+}
+
+.fourthGlowContainer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  box-shadow:
+          -12px 12px 30px rgba(70, 90, 150, 0.25),
+          24px 24px 50px rgba(100, 130, 200, 0.15),
+          12px 0 35px rgba(255,255,255,0.18);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* --- FIFTH Glow Container (mirror X only of second) --- */
+.fifthGlowContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.02);
+  border: 2px solid rgba(255,255,255,0.7);
+  position: relative;
+  transform: translate(420px, -270px) rotate(10deg); /* only X flipped */
+  box-shadow:
+          0 0 25px rgba(255,255,255,0.9),
+          inset 0 0 25px rgba(255,255,255,0.15);
+}
+
+.fifthGlowContainer::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 0 20px rgba(255,255,255,0.8);
+  pointer-events: none;
+}
+
+.fifthGlowContainer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  box-shadow:
+          -12px 12px 30px rgba(70, 90, 150, 0.25),
+          24px 24px 50px rgba(100, 130, 200, 0.15),
+          14px 0 40px rgba(255,255,255,0.2);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* --- SIXTH Glow Container (mirror X only of third) --- */
+.sixthGlowContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.02);
+  border: 2px solid rgba(255,255,255,0.7);
+  position: relative;
+  transform: translate(240px, -620px) rotate(-15deg); /* only X flipped */
+  box-shadow:
+          0 0 25px rgba(255,255,255,0.9),
+          inset 0 0 25px rgba(255,255,255,0.15);
+}
+
+.sixthGlowContainer::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 0 20px rgba(255,255,255,0.8);
+  pointer-events: none;
+}
+
+.sixthGlowContainer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  box-shadow:
+          12px 12px 30px rgba(70, 90, 150, 0.25),
+          24px 24px 50px rgba(100, 130, 200, 0.15),
+          12px 0 35px rgba(255,255,255,0.18);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Shared icon styling */
+.fourthGlowContainer .icon,
+.fifthGlowContainer .icon,
+.sixthGlowContainer .icon {
+  width: 60%;
+  height: 60%;
+  stroke: white;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,1))
+  drop-shadow(0 0 20px rgba(255,255,255,0.8));
+}
+/* --- SEVENTH Glow Container --- */
+/* Seventh Glow Container (bigger than others) */
+.seventhGlowContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;   /* bigger than 140px of other boxes */
+  height: 200px;  /* bigger than 140px */
+  border-radius: 32px; /* adjust for proportional roundness */
+  background: rgba(255,255,255,0.02);
+  border: 2px solid rgba(255,255,255,0.7);
+  position: relative;
+  transform: translate(0px, -640px) rotate(0deg); /* adjust if needed */
+  box-shadow:
+          0 0 35px rgba(255,255,255,0.9),   /* outer glow */
+          inset 0 0 25px rgba(255,255,255,0.15); /* inner subtle glow */
+}
+
+.seventhGlowContainer::before {
+  content: "";
+  position: absolute;
+  inset: 12px;  /* slightly larger for bigger box */
+  border-radius: 24px;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 0 28px rgba(255,255,255,0.8);
+  pointer-events: none;
+}
+
+.seventhGlowContainer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 32px;
+  box-shadow:
+          16px 16px 40px rgba(70,90,150,0.25),
+          30px 30px 60px rgba(100,130,200,0.15),
+          -12px 0 35px rgba(255,255,255,0.18);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Icon scaling for bigger container */
+.seventhGlowContainer .icon {
+  width: 60%;  /* adjust if you want icon bigger relative to new container */
+  height: 60%;
+  stroke: white;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,1))
+  drop-shadow(0 0 20px rgba(255,255,255,0.8));
+}
+
+
+/*.audioSymbol {*/
+/*  position: relative;*/
+/*  width: 1200px;*/
+/*  height: 800px;*/
+/*}*/
+
+/*!* --- FIRST ARC --- *!*/
+/*!* --- FIRST ARC --- *!*/
+/*.audioArcOne {*/
+/*  position: absolute;*/
+/*  width: 400px;*/
+/*  height: 400px;*/
+/*  border: 105px solid rgba(255,255,255,0.7);*/
+/*  border-radius: 50%;*/
+/*  clip: rect(0,400px,400px,200px);*/
+/*  top: 200px;*/
+/*  left: 50px;*/
+
+/*  !* Realistic left shadows + right white glow + pink tint *!*/
+/*  box-shadow:*/
+/*          inset -20px 0 40px rgba(255,255,255,0.15),   !* subtle left shadow *!*/
+/*          inset 15px 0 60px rgba(255,255,255,0.25),    !* inner white glow on right *!*/
+/*          0 0 50px rgba(255,255,255,0.9),              !* outer white glow *!*/
+/*          0 0 30px rgba(255,192,203,0.35);             !* pink outer accent *!*/
+/*  z-index: 1;*/
+/*}*/
+
+/*!* --- SECOND ARC --- *!*/
+/*.audioArcTwo {*/
+/*  position: absolute;*/
+/*  width: 400px;*/
+/*  height: 400px;*/
+/*  border: 105px solid rgba(255,255,255,0.85);*/
+/*  border-radius: 50%;*/
+/*  clip: rect(0,400px,400px,200px);*/
+/*  top: 170px;*/
+/*  left: 100px;*/
+
+/*  !* Realistic shading + glows *!*/
+/*  box-shadow:*/
+/*          inset -25px 0 45px rgba(255,255,255,0.18),  !* left subtle shadow *!*/
+/*          inset 20px 0 70px rgba(255,255,255,0.3),   !* inner right glow *!*/
+/*          0 0 60px rgba(255,255,255,0.85),           !* outer glow *!*/
+/*          0 0 40px rgba(255,192,203,0.4);            !* pink accent *!*/
+/*  z-index: 2;*/
+/*}*/
+
+/*!* --- MASSIVE THIRD BODY --- *!*/
+/*.audioBody {*/
+/*  position: absolute;*/
+/*  width: 1050px;  !* 2.5 rectangles wide *!*/
+/*  height: 600px;*/
+/*  background: rgba(255,255,255,0.05);*/
+/*  clip-path: polygon(0 0, 100% 50%, 0 100%);*/
+/*  top: 100px;*/
+/*  left: 200px;*/
+/*  border: 105px solid rgba(255,255,255,0.7); !* THICK triangle border *!*/
+/*  border-radius: 24px;*/
+/*  box-shadow:*/
+/*          0 0 120px rgba(255,255,255,0.9),*/
+/*          inset 0 0 60px rgba(255,255,255,0.15),*/
+/*          -30px 30px 120px rgba(255,192,203,0.4);*/
+/*  z-index: 3;*/
+/*}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*.chainsContainer {*/
+/*  !*z-index: -3;*!*/
+/*  display: inline-flex;*/
+
+/*  position: absolute;*/
+/*  top: 0;*/
+/*  left: 0;*/
+/*  width: 100%;*/
+/*  height: 100%;*/
+/*  pointer-events: none;*/
+/*}*/
+
+/*!* Common chain style *!*/
+/*.chain {*/
+/*  position: absolute;*/
+/*  animation: chainBob 3s ease-in-out infinite alternate;*/
+/*  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));*/
+
+/*  !* Optional: for smoother edge glow *!*/
+/*  z-index: 1;*/
+/*}*/
+
+/*!* Add subtle glows at edges *!*/
+/*.chain::before,*/
+/*.chain::after {*/
+/*  content: '';*/
+/*  position: absolute;*/
+/*  inset: 0;*/
+/*  pointer-events: none;*/
+/*  border-radius: 50%; !* soft rounded edges *!*/
+/*  z-index: -1;*/
+/*}*/
+
+/*.chain::before {*/
+/*  box-shadow:*/
+/*          0 0 10px rgba(255, 255, 255, 0.3),   !* subtle white outer glow *!*/
+/*          0 0 20px rgba(255, 255, 255, 0.15);  !* soft larger spread *!*/
+/*}*/
+
+/*.chain::after {*/
+/*  box-shadow:*/
+/*          0 0 15px rgba(70, 90, 150, 0.2),     !* soft stormy blue shadow *!*/
+/*          0 0 25px rgba(100, 130, 200, 0.1);   !* lighter blue fade *!*/
+/*}*/
+
+/*!* Optional: enhance the path glow slightly *!*/
+/*.chain path {*/
+/*  stroke: white;*/
+/*  stroke-width: 3;*/
+/*  stroke-linecap: round;*/
+/*  stroke-linejoin: round;*/
+
+/*  !* Remove previous rectangular drop-shadow *!*/
+/*  filter: none;*/
+
+/*  !* Apply subtle SVG filter for curved glow *!*/
+/*  stroke: white;*/
+/*  filter: url(#chainGlow);*/
+/*}*/
+
+
+/*!* Position chains exactly where they need to attach *!*/
+/*.chain1 { top: 500px; right: calc(100% - 800px); }*/
+/*.chain2 { top: 120px; right: calc(100% - 400px); }*/
+/*.chain3 { top: 180px; right: calc(100% - 400px); }*/
+
+/*.chain4 { top: 60px; left: calc(100% - 400px); transform: scaleX(-1); }*/
+/*.chain5 { top: 120px; left: calc(100% - 400px); transform: scaleX(-1); }*/
+/*.chain6 { top: 180px; left: calc(100% - 400px); transform: scaleX(-1); }*/
+
+/*.chain1 {*/
+/*  top: 650px !important;*/
+/*  right: calc(100% - 490px);*/
+/*  transform: translateX(390px) rotate(15deg) !important;*/
+/*}*/
+/*.chain2 {*/
+/*  top: 750px !important;*/
+/*  right: calc(100% - 310px);*/
+/*  transform: translateX(615px) rotate(-15deg) !important;*/
+/*}*/
+/*@keyframes chainBob {*/
+/*  0% { transform: translateY(0) }*/
+/*  50% { transform: translateY(4px) }*/
+/*  100% { transform: translateY(0) }*/
+/*}*/
+/* ——— TYPOGRAPHY ——— */
