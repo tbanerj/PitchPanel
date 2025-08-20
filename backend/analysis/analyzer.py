@@ -16,28 +16,31 @@ import warnings
 warnings.filterwarnings('ignore')
 from scipy.spatial.distance import cdist
 from librosa.sequence import dtw as librosa_dtw
+import librosa.display  # <-- add this so create_diction_plot() works
+
 
 
 NOTE_FEEDBACK = {
     "pitch": [
-        (0, 4, "Significant pitch issues. Focus on basic pitch matching and ear training."),
-        (4, 6, "Moderate pitch problems. Practice with a tuner and sustained notes."),
-        (6, 8, "Good pitch control with some drift. Work on interval accuracy."),
-        (8, 10, "Excellent pitch accuracy and stability.")
+        (0, 4,  "Significant intonation drift. Work with slow reference tones; slide into pitch, then settle. Use short loops (1–2 bars) and hold the center of the note before adding any vibrato."),
+        (4, 6,  "Moderate intonation issues. Sustain notes against a drone; aim for a steady center, then add gentle vibrato only after stability is achieved."),
+        (6, 8,  "Generally stable pitch with occasional scoops. Practice interval targets: pause on the arrival pitch, then release. Use slow portamenti to lock centers."),
+        (8, 10, "Accurate and steady. Maintain pitch centers on long tones; keep vibrato shallow and even after the pitch is locked.")
     ],
     "breath": [
-        (0, 4, "Poor breath support. Practice diaphragmatic breathing and long tones."),
-        (4, 6, "Inconsistent breath control. Work on breath management and phrasing."),
-        (6, 8, "Good breath support with minor inconsistencies."),
-        (8, 10, "Excellent breath control and support.")
+        (0, 4,  "Airflow is uneven. Aim for lateral ribcage expansion on inhale; on exhale, think ‘pliable, flexible release’ so the air stays even. Try 8–10 second steady hiss exercises."),
+        (4, 6,  "Inconsistent airflow. Practice silent, low inhalation with side expansion; keep the ribs gently buoyant during phrases. Use messa di voce on a single pitch."),
+        (6, 8,  "Good airflow with minor dips. Plan breaths at phrase joints; use a slow count-out exhale (e.g., count to 12) to keep pressure even."),
+        (8, 10, "Consistent, efficient airflow. Continue lateral expansion on inhale and supple release on exhale; lengthen phrases without pressing.")
     ],
     "diction": [
-        (0, 4, "Unclear articulation. Practice vowel shaping and consonant clarity."),
-        (4, 6, "Moderate diction issues. Focus on vowel placement and consonant precision."),
-        (6, 8, "Good diction with room for improvement in clarity."),
-        (8, 10, "Clear, precise articulation and diction.")
+        (0, 4,  "Consonants blur and vowels shift. Isolate text on a single pitch (‘spoken on pitch’); shape pure vowels (i, e, a, o, u) before adding melody."),
+        (4, 6,  "Some muddiness on fast text. Pop consonants at note onsets and keep vowels stable for the note’s duration. Try ‘vowel chains’ slowly, then add tempo."),
+        (6, 8,  "Clear overall with a few swallowed consonants. Keep tongue forward on bright vowels and release final consonants cleanly."),
+        (8, 10, "Crisp consonants and stable vowels. Maintain vowel purity through the note; add expressive consonant energy at boundaries.")
     ]
 }
+
 
 def extract_reference_pitches_from_sheetmusic(sheet_image_path):
     """
@@ -173,104 +176,117 @@ def cleanup_temp_uploads():
             except Exception as e:
                 print(f"Failed to delete {path}: {e}")
 
+import numpy as np
+import librosa
+from scipy.signal import savgol_filter, butter, filtfilt
+
 def analyze_pitch_accuracy(f0, times, reference_notes=None, sr=22050, debug=False):
-    """Comprehensive pitch analysis including accuracy, stability, and vibrato, now with true DTW alignment to reference notes if provided"""
-    
-    # Remove NaN values for analysis
+    """
+    Vibrato-aware pitch scoring.
+    Returns:
+      pitch_score, accuracy_score, stability_score, vibrato_score, debug_dict
+    """
+    # --- Clean ---
     valid_mask = ~np.isnan(f0)
     f0_clean = f0[valid_mask]
     times_clean = times[valid_mask]
-    
-    if len(f0_clean) == 0:
-        return 0, 0, 0, 0, {}
-    
-    dtw_debug = {}
-    # 1. Pitch accuracy (if reference provided)
-    if reference_notes:
-        ref_hz = np.array([float(librosa.note_to_hz(note)) for note in reference_notes])
-        sung_hz = np.array(f0_clean)
-        # Interpolate reference to match sung times if needed
-        ref_interp = np.interp(times_clean, np.linspace(0, times_clean[-1], len(ref_hz)), ref_hz)
-        # Use true DTW to align sung pitch and reference
-        try:
-            # Only use valid (nonzero) reference and sung pitches for DTW
-            sung_valid = sung_hz > 0
-            ref_valid = ref_interp > 0
-            sung_hz_valid = sung_hz[sung_valid]
-            ref_interp_valid = ref_interp[ref_valid]
-            if len(sung_hz_valid) > 0 and len(ref_interp_valid) > 0:
-                # Compute cost matrix in cents
-                cost_matrix = cdist(
-                    sung_hz_valid.reshape(-1, 1),
-                    ref_interp_valid.reshape(-1, 1),
-                    lambda x, y: np.abs(1200 * np.log2(x[0] / y[0]))
-                )
-                # True DTW (monotonic path)
-                D, wp = librosa_dtw(C=cost_matrix)
-                dtw_deviation = cost_matrix[tuple(zip(*wp[::-1]))]
-                # Score: 10 for <=50 cents mean deviation, 0 for >=300 cents
-                mean_dev = np.mean(np.abs(dtw_deviation))
-                accuracy_score = np.clip(10 * (1 - (mean_dev - 50) / 250), 0, 10)
-                dtw_debug = {
-                    'mean_deviation_cents': float(mean_dev),
-                    'dtw_path': [ [int(i), int(j)] for (i, j) in map(tuple, map(list, wp[::-1])) ],
-                    'dtw_deviation': [float(x) for x in dtw_deviation.tolist()],
-                    'sung_hz_valid': [float(x) for x in sung_hz_valid.tolist()],
-                    'ref_interp_valid': [float(x) for x in ref_interp_valid.tolist()]
-                }
-            else:
-                accuracy_score = 0
-        except Exception as e:
-            print(f"DTW pitch alignment failed: {e}")
-            accuracy_score = 0
+
+    if len(f0_clean) < 10 or times_clean[-1] <= times_clean[0]:
+        return 5.0, 5.0, 5.0, 5.0, {}
+
+    # --- 1) Pitch center via smoothing (do not penalize vibrato) ---
+    # Ensure odd window and at least 5
+    win = min(101, len(f0_clean))
+    if win % 2 == 0:
+        win -= 1
+    win = max(win, 5)
+    smooth_f0 = savgol_filter(f0_clean, win, 3)
+
+    # --- 2) Vibrato metrics on cents residuals ---
+    # Convert residual to cents relative to the center
+    ratio = np.clip(f0_clean / np.clip(smooth_f0, 1e-6, None), 1e-6, None)
+    resid_cents = 1200.0 * np.log2(ratio)
+
+    # Effective frame rate from time vector
+    fs = len(resid_cents) / (times_clean[-1] - times_clean[0])
+
+    # Band-pass 4–8 Hz to isolate musical vibrato
+    low, high = 4.0, 8.0
+    # Ensure filter is valid (Nyquist > high)
+    nyq = fs / 2.0
+    vib_band = resid_cents.copy()
+    if nyq > high and len(resid_cents) > 10:
+        b, a = butter(2, [low/nyq, high/nyq], btype='band')
+        vib_band = filtfilt(b, a, resid_cents)
+
+    vib_depth_cents = float(np.std(vib_band) * np.sqrt(2))  # ~peak depth from RMS
+    vib_depth_cents = np.clip(vib_depth_cents, 0, 300)
+
+    # Vibrato rate via FFT peak (4–8 Hz window)
+    vib_rate_hz = np.nan
+    if len(vib_band) > 16:
+        freqs = np.fft.rfftfreq(len(vib_band), d=1.0/fs)
+        mag = np.abs(np.fft.rfft(vib_band))
+        band = (freqs >= low) & (freqs <= high)
+        if np.any(band) and mag[band].sum() > 0:
+            vib_rate_hz = float(freqs[band][np.argmax(mag[band])])
+
+    # Score vibrato: ideal depth ~30–80 cents
+    if 30 <= vib_depth_cents <= 80:
+        vibrato_score = 10.0
+    elif vib_depth_cents < 30:
+        vibrato_score = max(0.0, 10.0 - (30 - vib_depth_cents) / 5.0)
     else:
-        accuracy_score = 7.0  # Neutral score when no reference
-    
-    # 2. Pitch stability (variance in pitch)
-    pitch_variance = np.var(f0_clean)
-    stability_score = np.clip(10 - pitch_variance / 1000, 0, 10)
-    
-    # 3. Vibrato analysis
-    # Detect vibrato by looking for periodic variations
-    if len(f0_clean) > 50:
-        # Apply smoothing to isolate vibrato
-        smooth_f0 = savgol_filter(f0_clean, min(51, len(f0_clean)//2*2+1), 3)
-        vibrato_signal = f0_clean - smooth_f0
-        
-        # Calculate vibrato rate and extent
-        if len(vibrato_signal) > 20:
-            # Find peaks in vibrato signal
-            peaks, _ = find_peaks(np.abs(vibrato_signal), height=np.std(vibrato_signal))
-            if len(peaks) > 2:
-                vibrato_rate = len(peaks) / (times_clean[-1] - times_clean[0])  # Hz
-                vibrato_extent = np.std(vibrato_signal)
-                
-                # Score vibrato (5-7 Hz is ideal, 0.5-2 semitones extent)
-                rate_score = np.clip(10 - abs(vibrato_rate - 6) * 2, 0, 10)
-                extent_score = np.clip(10 - abs(vibrato_extent - 50) / 10, 0, 10)
-                vibrato_score = (rate_score + extent_score) / 2
-            else:
-                vibrato_score = 5.0  # No clear vibrato
+        vibrato_score = max(0.0, 10.0 - (vib_depth_cents - 80) / 10.0)
+
+    # --- 3) Stability of the center (not raw F0) ---
+    # Use variance of smoothed center, normalized
+    center_var = np.var(smooth_f0)
+    stability_score = float(np.clip(10.0 - center_var / 500.0, 0.0, 10.0))
+
+    # --- 4) Reference comparison (optional, use center vs reference) ---
+    if reference_notes is not None and len(reference_notes) >= 2:
+        ref_hz = np.array([float(librosa.note_to_hz(n)) for n in reference_notes], dtype=float)
+        ref_time = np.linspace(0.0, times_clean[-1], len(ref_hz))
+        ref_interp = np.interp(times_clean, ref_time, ref_hz)
+        cents_dev = 1200.0 * np.log2(np.clip(smooth_f0 / np.clip(ref_interp, 1e-6, None), 1e-6, None))
+        mean_abs_dev = float(np.nanmean(np.abs(cents_dev)))
+        # 0–10 scale: ≤10–20 cents ~ top; 50 cents average ~ 0
+        accuracy_score = float(np.clip(10.0 - (mean_abs_dev / 5.0), 0.0, 10.0))
+    else:
+        # No reference: accuracy from center stability + healthy vibrato
+        # (lightly include interval smoothness)
+        if len(smooth_f0) > 2:
+            intervals = np.diff(smooth_f0)
+            interval_var = np.var(np.abs(intervals))
+            interval_score = float(np.clip(10.0 - interval_var / 1000.0, 0.0, 10.0))
         else:
-            vibrato_score = 5.0
-    else:
-        vibrato_score = 5.0
-    
-    # 4. Overall pitch score (weighted combination)
-    pitch_score = (accuracy_score * 0.4 + stability_score * 0.3 + vibrato_score * 0.3)
-    
-    return pitch_score, accuracy_score, stability_score, vibrato_score, dtw_debug
+            interval_score = 5.0
+        accuracy_score = float(0.65 * stability_score + 0.25 * vibrato_score + 0.10 * interval_score)
+
+    # --- 5) Combined pitch score ---
+    pitch_score = float(0.7 * accuracy_score + 0.2 * stability_score + 0.1 * vibrato_score)
+
+    debug_out = {}
+    if debug:
+        debug_out = {
+            "vibrato_depth_cents": vib_depth_cents,
+            "vibrato_rate_hz": vib_rate_hz,
+            "center_variance": float(center_var),
+            "frame_rate_hz": float(fs)
+        }
+
+    return pitch_score, accuracy_score, stability_score, float(vibrato_score), debug_out
 
 def analyze_breath_support(y, sr, rms):
     """Comprehensive breath support analysis"""
-    
     # 1. Energy consistency
     if len(rms) < 7:
         rms_smooth = rms  # Too short to smooth
     else:
         # Make sure window length is odd and <= len(rms)
         window_length = min(51, len(rms) if len(rms) % 2 == 1 else len(rms) - 1)
-    rms_smooth = savgol_filter(rms, window_length, 3)
+        rms_smooth = savgol_filter(rms, window_length, 3)
 
     energy_variance = np.var(rms_smooth)
     energy_consistency = np.clip(10 - energy_variance * 100, 0, 10)
