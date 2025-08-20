@@ -13,6 +13,10 @@
 # testing
 /coverage
 
+
+#temp
+backend/temp_uploads/
+
 # next.js
 /.next/
 /out/
@@ -39,3 +43,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ignore auto-generated sitemaps
+frontend/public/sitemap-*.xml
