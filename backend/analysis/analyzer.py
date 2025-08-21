@@ -8,6 +8,7 @@ import io
 import base64
 import os
 import joblib
+import glob
 import subprocess
 from sklearn.linear_model import LinearRegression
 from scipy.signal import find_peaks, savgol_filter
@@ -166,15 +167,17 @@ def convert_to_wav(input_path):
         raise RuntimeError(f"Failed to convert audio file: {e.stderr.decode()}") from e
 
 def cleanup_temp_uploads():
-    temp_dir = "temp_uploads"
-    if os.path.exists(temp_dir):
-        for f in os.listdir(temp_dir):
-            path = os.path.join(temp_dir, f)
+    """Remove all audio files from backend/temp_uploads/ after processing."""
+    temp_dir = "backend/temp_uploads"
+    audio_exts = ("*.wav", "*.webm", "*.mp3", "*.m4a", "*.ogg", "*.flac")  # add more if needed
+
+    for ext in audio_exts:
+        for f in glob.glob(os.path.join(temp_dir, ext)):
             try:
-                if os.path.isfile(path):
-                    os.remove(path)
+                os.remove(f)
+                print(f"Deleted: {f}")
             except Exception as e:
-                print(f"Failed to delete {path}: {e}")
+                print(f"Error deleting {f}: {e}")
 
 import numpy as np
 import librosa
@@ -620,8 +623,7 @@ def analyze_singing_ai(file_path, reference_notes=None, sheet_image_path=None, s
         except Exception as e:
             print(f"Error creating diction plot: {e}")
 
-        if delete_after:
-            cleanup_temp_uploads()
+        cleanup_temp_uploads()
 
         feedback = {
             "pitch_score": round(pitch_score, 1),
