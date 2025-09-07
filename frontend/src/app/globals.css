@@ -156,3 +156,8 @@ audio {
     font-size: 1.4rem;
   }
 }
+
+html, body {
+  position: relative;
+  overflow-x: hidden;
+}

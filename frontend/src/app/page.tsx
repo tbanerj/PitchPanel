@@ -3,6 +3,13 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { Metadata } from 'next';
 import styles from './page.module.css';
+import FadeOnScroll from './fadeonscroll';
+import TestimonialSlider from './TestimonialSlider';
+
+
+declare module "*.png";
+const analyzerPng = "/analyzerScreenshot.png";
+
 
 export const metadata: Metadata = {
   title: 'PitchPanel',
@@ -25,8 +32,14 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function HomePage() {
+const data = [
+  { id: 1, text: 'Rural areas.' },
+  { id: 2, text: 'Those with language barriers and more.' },
+  { id: 3, text: 'Remote locations and beyond.' },
+  { id: 4, text: 'Anyone with a passion for singing.' },
+];
 
+export default function HomePage() {
   return (
       <>
         <Script
@@ -45,8 +58,13 @@ export default function HomePage() {
               }),
             }}
         />
+
         <main className={styles.container}>
           <div className={styles.bgGlow}/>
+          {/* This glow will appear in the bottom-right of Image 2 */}
+          <div className={`${styles.globalConnectingGlow} ${styles.globalConnectingGlow1}`} />
+          {/* This glow will appear in the top-left of Image 3 */}
+          <div className={`${styles.globalConnectingGlow} ${styles.globalConnectingGlow2}`} />
           <section className={styles.heroSection}>
             <div className={styles.heroContent}>
               <h1 className={styles.heroTitle}>Master Your Voice with AI</h1>
@@ -58,327 +76,161 @@ export default function HomePage() {
               </Link>
             </div>
             <div className={styles.glowContainer}>
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={styles.icon}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" className={styles.icon} viewBox="0 0 24 24" fill="none"
+                   stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 18V5l12-2v13"/>
                 <circle cx="6" cy="18" r="3"/>
                 <circle cx="18" cy="16" r="3"/>
               </svg>
             </div>
-
-            {/* Second Glow Container with elegant 8th note */}
-            {/* Second Glow Container with properly positioned 8th note */}
-            {/* Second Glow Container with classic 8th note */}
-            {/* Second Glow Container with simple music note */}
-            {/* Second Glow Container with a whole rest */}
-            {/* Second Glow Container with filled whole rest */}
-            {/* Second Glow Container with proper whole rest */}
-            {/* Second Glow Container with larger whole rest */}
             <div className={styles.secondGlowContainer}>
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={styles.icon}
-                  viewBox="0 0 24 24"
-                  fill="white"
-                  stroke="none"
-              >
-                {/* Main body of whole rest */}
+              <svg xmlns="http://www.w3.org/2000/svg" className={styles.icon} viewBox="0 0 24 24" fill="white"
+                   stroke="none">
                 <rect x="7" y="9" width="10" height="8" rx="1" ry="1"/>
-
-                {/* Extended top hat */}
                 <rect x="5" y="7" width="14" height="3" rx="1" ry="1"/>
               </svg>
             </div>
-
-            {/* Third Glow Container with whole rest */}
-            {/* Third Glow Container with treble clef */}
-            {/* Third Glow Container with proper treble clef */}
-            {/* Third Glow Container with accurate treble clef */}
-            {/* Third Glow Container with simple music note */}
-            {/* Third Glow Container with clean eighth note */}
-            {/* Third Glow Container with fully scaled, centered eighth note */}
-            {/* Third Glow Container with fully scaled, centered eighth note */}
-            {/* Third Glow Container with perfectly centered, scaled eighth note */}
             <div className={styles.thirdGlowContainer}>
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={styles.icon}
-                  viewBox="0 0 32 32"  /* larger viewBox to avoid clipping */
-                  fill="white"
-                  stroke="none"
-              >
-                {/* Group for scaling and precise centering */}
+              <svg xmlns="http://www.w3.org/2000/svg" className={styles.icon} viewBox="0 0 32 32" fill="white"
+                   stroke="none">
                 <g transform="translate(-5,0) scale(1.2)">
                   <circle cx="16" cy="20" r="4"/>
-                  {/* note head */}
                   <rect x="18" y="4" width="2" height="16"/>
-                  {/* stem */}
                   <path d="M20 4c0 0 6 1 2 6" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                  {/* flag */}
                 </g>
               </svg>
             </div>
-            {/*<div className={styles.audioSymbol}>*/}
-            {/*  <div className={styles.audioArcOne}></div>*/}
-            {/*  <div className={styles.audioArcTwo}></div>*/}
-            {/*  <div className={styles.audioBody}></div>*/}
-            {/*</div>*/}
-
-            {/* Fourth Glow Container (mirrored glowContainer with same SVG) */}
             <div className={styles.fourthGlowContainer}>
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={styles.icon}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" className={styles.icon} viewBox="0 0 24 24" fill="none"
+                   stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 18V5l12-2v13"/>
                 <circle cx="6" cy="18" r="3"/>
                 <circle cx="18" cy="16" r="3"/>
               </svg>
             </div>
-
-            {/* Fifth Glow Container (mirrored secondGlowContainer with same SVG) */}
             <div className={styles.fifthGlowContainer}>
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={styles.icon}
-                  viewBox="0 0 24 24"
-                  fill="white"
-                  stroke="none"
-              >
-                {/* Main body of whole rest */}
+              <svg xmlns="http://www.w3.org/2000/svg" className={styles.icon} viewBox="0 0 24 24" fill="white"
+                   stroke="none">
                 <rect x="7" y="9" width="10" height="8" rx="1" ry="1"/>
-
-                {/* Extended top hat */}
                 <rect x="5" y="7" width="14" height="3" rx="1" ry="1"/>
               </svg>
             </div>
-
-            {/* Sixth Glow Container (mirrored thirdGlowContainer with same SVG) */}
             <div className={styles.sixthGlowContainer}>
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={styles.icon}
-                  viewBox="0 0 32 32"  /* larger viewBox to avoid clipping */
-                  fill="white"
-                  stroke="none"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" className={styles.icon} viewBox="0 0 32 32" fill="white"
+                   stroke="none">
                 <g transform="translate(-5,0) scale(1.2)">
                   <circle cx="16" cy="20" r="4"/>
-                  {/* note head */}
                   <rect x="18" y="4" width="2" height="16"/>
-                  {/* stem */}
                   <path d="M20 4c0 0 6 1 2 6" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                  {/* flag */}
                 </g>
               </svg>
             </div>
-            {/* Seventh Glow Container with microphone */}
             <div id="mic" className={styles.seventhGlowContainer}>
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={styles.icon}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-              >
-                {/* Microphone body */}
+              <svg xmlns="http://www.w3.org/2000/svg" className={styles.icon} viewBox="0 0 24 24" fill="none"
+                   stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="10" y="2" width="4" height="14" rx="2" ry="2"/>
-                {/* Microphone base */}
                 <line x1="12" y1="16" x2="12" y2="22"/>
-                {/* Stand */}
                 <line x1="8" y1="22" x2="16" y2="22"/>
               </svg>
             </div>
-            {/* Futuristic chain links */}
-            {/* Chains Container */}
-            {/*<div className={styles.chainsContainer}>*/}
-            {/*  {Array.from({ length: 6 }).map((_, i) => (*/}
-            {/*      <svg*/}
-            {/*          key={i}*/}
-            {/*          className={`${styles.chain} ${styles[`chain${i + 1}`]}`}*/}
-            {/*          viewBox="0 0 100 50"*/}
-            {/*          preserveAspectRatio="none"*/}
-            {/*      >*/}
-            {/*        <path*/}
-            {/*            d="M0,0 Q50,20 100,0"*/}
-            {/*            stroke="white"*/}
-            {/*            strokeWidth="3"*/}
-            {/*            fill="none"*/}
-            {/*            strokeLinecap="round"*/}
-            {/*            strokeLinejoin="round"*/}
-            {/*        />*/}
-
-            {/*      </svg>*/}
-
-            {/*  ))}*/}
-            {/*</div>*/}
           </section>
-  {/*do not touch a single line up here or the footer everything u need is below*/}
 
 
-          {/*all this here is yours to work with go as much as u can fill as much space as possible*/}
-
-
-
-
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/*stop here*/}
+          {/* SECTION: What is PitchPanel */}
+          <section className={styles.heroSection}>
+            <div className={styles.heroContent}> {/* Added a div for better grouping */}
+              <h1 className={styles.heroHead}>What is PitchPanel</h1>
+              <p className={styles.heroAarav}>
+                PitchPanel is your personal AI voice coach — a simple, web-based tool that gives singers instant
+                feedback
+                on their pitch, breath support, and diction.
+              </p>
+            </div>
+            {/* Closing heroContent div */}
+            <Image
+                src={analyzerPng}
+                alt="PitchPanel Product Screenshot"
+                width={400}
+                height={225}
+                className={styles.image}
+            />
+          </section>
+
+
+          <section className={styles.featureHighlightSection}>
+            {/* The squares are wrapped in FadeOnScroll for a staggered animation, with positioning applied to the wrapper */}
+            <FadeOnScroll delay={200} wrapperClassName={styles.square1}>
+              <div className={styles.glassSquare}>
+                {/* Icon: Microphone */}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+                     strokeLinejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+              </div>
+            </FadeOnScroll>
+
+            <FadeOnScroll delay={200} wrapperClassName={styles.square2}>
+              <div className={styles.glassSquare}>
+                {/* Icon: Detailed Audio Wave */}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+                     strokeLinejoin="round">
+                  <path d="M2 12h3l3-7 4 14 3-7h5"/>
+                </svg>
+              </div>
+            </FadeOnScroll>
+
+            <FadeOnScroll delay={200} wrapperClassName={styles.square3}>
+              <div className={styles.glassSquare}>
+                {/* Icon: Sound Bars / Equalizer */}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+                     strokeLinejoin="round">
+                  <path d="M5 18V6M12 21V3M19 15V9"/>
+                </svg>
+              </div>
+            </FadeOnScroll>
+
+            <FadeOnScroll delay={200} wrapperClassName={styles.square4}>
+              <div className={styles.glassSquare}>
+                {/* Icon: Simple Heartbeat/Pitch Line */}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+                     strokeLinejoin="round">
+                  <path d="M3 12h2.5l2-8 3 16 3-16 2 8h2.5"/>
+                </svg>
+              </div>
+            </FadeOnScroll>
+
+            {/* This inner container holds the content AND clips the glows */}
+            <div className={styles.sectionInnerContainer}>
+              {/* Background Glows are INSIDE the inner container */}
+              <div className={`${styles.featureHighlightGlow} ${styles.featureHighlightGlow1}`}/>
+              <div className={`${styles.featureHighlightGlow} ${styles.featureHighlightGlow2}`}/>
+
+              {/* All your animated text content also goes INSIDE */}
+              <FadeOnScroll>
+                <h3 className={styles.animatedHeading}>It's not just a tool</h3>
+              </FadeOnScroll>
+
+              <FadeOnScroll delay={100}>
+                <p className={styles.animatedParagraph1}>
+                  It's the future. PitchPanel solves a big problem of lack of accessibility and feedback, seen in:
+                </p>
+              </FadeOnScroll>
+
+              <FadeOnScroll items={data}/>
+
+              <FadeOnScroll delay={300}>
+                <p className={styles.animatedParagraph2}>
+                  PitchPanel innovates; and can offer standalone feedback for beginners, or supplemental feedback for
+                  students between traditional lessons, accessible to all.
+                </p>
+              </FadeOnScroll>
+            </div>
+          </section>
+
+          <TestimonialSlider />
 
           <footer className={styles.footer}>
             <div className={styles.footerContainer}>
@@ -415,3 +267,4 @@ export default function HomePage() {
       </>
   );
 }
+

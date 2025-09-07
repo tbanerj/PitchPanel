@@ -60,6 +60,19 @@
   to { transform: translate(150px, 150px) rotate(15deg); }
 }
 
+.image {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  object-fit: cover;
+  width: 50%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.image:hover {
+  transform: scale(1.02);
+}
+
 /* --- Hero Section --- */
 .heroSection {
   width: 100%;
@@ -86,6 +99,83 @@
   margin-bottom: 1rem;
   animation: slideInUp 1s ease-out;
 }
+
+.heroHead {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
+  animation: slideInUp 1s ease-out;
+}
+
+.heroAarav {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  color: var(--text-secondary);
+  max-width: 1000px;
+  margin: 0 auto 2.5rem;
+  animation: slideInUp 1.2s ease-out;
+}
+
+.list-heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 80%;
+  max-width: 600px;
+}
+
+.list-container {
+  list-style: none; /* Removes the bullet points */
+  padding: 0;       /* Removes the default indentation */
+  margin: 2rem 0;   /* Adds some space above and below the list */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fadeInElement {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fadeInElementVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.list-item {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 1.5rem;
+  padding: 10px;
+  border-radius: 8px;
+
+  /* The initial state of the animation */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* The final state of the animation */
+.list-item.fade-in-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Add a hover effect for a more polished look */
+
 
 .heroSubtitle {
   font-size: clamp(1rem, 2vw, 1.5rem);
@@ -612,17 +702,330 @@
 /*  z-index: 3;*/
 /*}*/
 
+.globalConnectingGlow {
+  position: absolute;
+  width: 700px; /* Adjust size as needed */
+  height: 700px; /* Adjust size as needed */
+  border-radius: 50%;
+  filter: blur(180px); /* Heavy blur */
+  opacity: 0.4; /* Slightly less opaque for a softer blend */
+  z-index: -1;
+  pointer-events: none;
+  /* Default background: you can override this for individual glows */
+  background: radial-gradient(circle, rgba(200, 100, 250, 0.6), rgba(255, 255, 255, 0));
+}
+
+/* Positioning for the glow that's in the bottom-right of Image 2 */
+.globalConnectingGlow1 {
+  top: 100vh; /* Roughly at the end of the first viewport screen */
+  right: 0vw; /* Position it on the far right */
+  transform: translate(50%, -50%); /* Shift it half its width/height out to start the glow off-screen */
+  background: radial-gradient(circle, rgba(255, 120, 180, 0.6), rgba(255, 255, 255, 0)); /* A warm pinkish glow */
+}
+
+/* Positioning for the glow that's in the top-left of Image 3 */
+.globalConnectingGlow2 {
+  top: 150vh; /* Adjust this to appear at the start of Image 3 */
+  left: 0vw; /* Position it on the far left */
+  transform: translate(-50%, -50%); /* Shift it half its width/height out to start the glow off-screen */
+  background: radial-gradient(circle, rgba(120, 180, 255, 0.6), rgba(255, 255, 255, 0)); /* A cool bluish glow */
+}
+
+/* Ensure your body/html has position: relative if you use position: absolute for glows */
+
+
+.featureHighlightSection {
+  position: relative;
+  width: 100%; /* It's now a top-level element, so this is full-width */
+  padding: 0 5vw; /* Use viewport-width padding for responsive spacing */
+  box-sizing: border-box;
+  margin: 10rem 0;
+}
+
+
+/* --- Content Styling --- */
+.featureHighlightContent {
+  grid-column: 2 / span 5; /* Position content on the left */
+  z-index: 10;
+  text-align: left;
+}
+
+.featureHighlightSubheading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #a0a0c0; /* A soft purple-ish gray */
+  margin-bottom: 1rem;
+}
+
+.featureHighlightHeading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+}
+
+.featureHighlightDescription {
+  font-size: 1.1rem;
+  color: #c0c0e0; /* Lighter than the subheading */
+  line-height: 1.6;
+}
+
+/* --- App Preview Placeholder (Kept the same name as it's generic) --- */
+.appPreview {
+  grid-column: 8 / span 4;
+  height: 400px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- Background Glows --- */
+.featureHighlightGlow {
+  position: absolute;
+  filter: blur(100px);
+  z-index: 0;
+  border-radius: 50%;
+}
+
+.glassSquare {
+  /* It keeps all the "look and feel" styles */
+  width: 100px;
+  height: 100px;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 0 20px rgba(255, 255, 255, 0.1) inset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  color: #ffffff;
+  /* NOTE: position: absolute, z-index, and animation are REMOVED from here */
+}
+
+.square1, .square2, .square3, .square4 {
+  position: absolute;
+  z-index: 1;
+  /* The floating animation is now applied to the wrapper */
+  animation: floatEffect 6s ease-in-out infinite;
+}
+
+
+.square1 {
+  top: 10%;    /* Adjusted for better balance */
+  left: 18vw;   /* Pushed further out (was 5vw) */
+  --rotation: -20deg;
+  animation-delay: 0s;
+}
+.square2 {
+  top: 12%;    /* Adjusted for better balance */
+  right: 22vw;  /* Pushed further out (was 5vw) */
+  --rotation: 20deg;
+  animation-delay: 1.5s;
+}
+.square3 {
+  bottom: 15%; /* Adjusted for better balance */
+  left: 21vw;   /* Pushed further out (was 10vw) */
+  --rotation: 10deg;
+  animation-delay: 3s;
+}
+.square4 {
+  bottom: 20%; /* Adjusted for better balance */
+  right: 19vw;  /* Pushed further out (was 10vw) */
+  --rotation: -15deg;
+  animation-delay: 4.5s;
+}
+
+
+/* Ensure your @keyframes floatEffect is still in the file */
+@keyframes floatEffect {
+  0% { transform: translateY(0px) scale(1) rotate(var(--rotation, 0deg)); }
+  50% { transform: translateY(-10px) scale(1.02) rotate(var(--rotation, 0deg)); }
+  100% { transform: translateY(0px) scale(1) rotate(var(--rotation, 0deg)); }
+}
+
+.sectionInnerContainer {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  overflow: hidden;
+  border-radius: 2rem;
+}
+
+
+
+/* This targets the wrapper for your h3 and p tags */
+.fadeInElement {
+  width: 100%; /* Ensure it takes up space */
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem; /* Adds space AFTER each element */
+}
+.fadeInElement:last-child {
+  margin-bottom: 0; /* Removes margin from the very last element */
+}
 
 
 
 
+.animatedHeading {
+  color: #a0a0c0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a; /* Changed from white to a dark charcoal/black */
+  text-align: center;
+  margin: 0;
+}
 
+.animatedParagraph1 {
+  font-size: 1.2rem;
+  color: #333333; /* Changed to a slightly lighter dark gray */
+  line-height: 1.6;
+  max-width: 550px;
+  text-align: center;
+  margin: 0;
+}
+.animatedParagraph2 {
+  font-size: 1.2rem;
+  color: #333333; /* Changed to a slightly lighter dark gray */
+  line-height: 1.6;
+  max-width: 700px;
+  text-align: center;
+  margin: 0;
+}
 
+.list-item {
+  /* Base styles */
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333333; /* Changed to match the paragraph color */
+  line-height: 1.7;
+  text-align: center;
+  margin-bottom: 1rem;
 
+  /* Animation styles (these are correct, keep them) */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 
+  /* Ensure no bullet points appear */
+  list-style-type: none !important;
+}
 
+.testimonialSection {
+  width: 100%;
+  max-width: 800px;
+  margin: 10rem auto;
+  padding: 4rem 3.5rem; /* Increased padding to make room for arrows */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; /* This is essential for positioning the arrows */
+}
 
+.testimonialSubheading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #a0a0c0; /* A soft purple-ish gray */
+  margin-bottom: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
+.testimonialContent {
+  width: 100%;
+}
+
+.testimonialQuote {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #333333; /* Dark text color */
+  font-style: italic;
+  margin: 0 0 1.5rem 0;
+  border: none;
+  padding: 0;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.testimonialAuthor {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a; /* Darker text for the author */
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* This is the fade-in animation for the text */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sliderArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  color: #a0a0c0; /* Soft gray color */
+  transition: color 0.2s ease-in-out;
+}
+
+.sliderArrow:hover {
+  color: #ffffff; /* Darker color on hover */
+  background-color: #8B2CF7;
+}
+
+.arrowLeft {
+  left: 0;
+}
+
+.arrowRight {
+  right: 0;
+}
+
+/* Dots Styles */
+.dotsContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #d1d1d1; /* Inactive dot color */
+  border: none;
+  margin: 0 5px;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.dotActive {
+  background-color: #333333; /* Active dot color */
+}
 
 
 
