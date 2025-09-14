@@ -12,6 +12,16 @@
   --body-gray: #555;
 }
 
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full viewport height */
+}
+
+/* Allow main content to take up remaining space */
+.content {
+  flex: 1;
+}
 
 body{
 
@@ -155,4 +165,9 @@ audio {
   .score-highlight {
     font-size: 1.4rem;
   }
+}
+
+html, body {
+  position: relative;
+  overflow-x: hidden;
 }
