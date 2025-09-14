@@ -231,38 +231,6 @@ export default function HomePage() {
           </section>
 
           <TestimonialSlider />
-
-          <footer className={styles.footer}>
-            <div className={styles.footerContainer}>
-              <div className={styles.footerBrand}>
-                <h2>PitchPanel</h2>
-                <p>Your AI-powered vocal coach.</p>
-              </div>
-              <div className={styles.footerLinks}>
-                <div>
-                  <h3>Product</h3>
-                  <Link href="/product">Features</Link>
-                  <Link href="/pricing">Pricing</Link>
-                  <Link href="/download">Download</Link>
-                </div>
-                <div>
-                  <h3>Company</h3>
-                  <Link href="/about">About</Link>
-                  <Link href="/blog">Blog</Link>
-                  <Link href="/careers">Careers</Link>
-                </div>
-                <div>
-                  <h3>Support</h3>
-                  <Link href="/help">Help Center</Link>
-                  <Link href="/contact">Contact</Link>
-                  <Link href="/faq">FAQ</Link>
-                </div>
-              </div>
-              <div className={styles.footerBottom}>
-                <p>© {new Date().getFullYear()} PitchPanel. All rights reserved.</p>
-              </div>
-            </div>
-          </footer>
         </main>
       </>
   );

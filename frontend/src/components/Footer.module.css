@@ -1,0 +1,71 @@
+.footer {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--text-primary);
+  font-family: 'Urbanist', sans-serif;
+  padding: 4rem 2rem 2rem;
+  z-index: 1;
+}
+
+
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.footerBrand h2 {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.footerBrand p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.footerLinks h3 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.footerLinks a {
+  display: block;
+  color: var(--text-secondary);
+  text-decoration: none;
+  margin-bottom: 0.3rem;
+  transition: color 0.2s ease;
+}
+
+.footerLinks a:hover {
+  color: var(--brand-blue);
+}
+
+.footerBottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .footerLinks {
+    flex-direction: column;
+    gap: 2rem;
+  }
+}

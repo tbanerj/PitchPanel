@@ -11,18 +11,6 @@ const testimonials = [
         quote: "It is clear a lot of dedication and thought went into the production of PitchPanel. The team was incredibly receptive to feedback, and implemented said feedback into PitchPanel quickly and efficiently. This app offers advice that beginning singers may find helpful and encouraging!",
         author: "DJ Jordan, Seattle Voice Teacher"
     },
-    {
-        quote: "yoooo ts is sooo sick",
-        author: "Aarav Kumar"
-    },
-    {
-        quote: "Im saurish",
-        author: "Saurish Srivastava",
-    },
-    {
-        quote: "can i containerize now",
-        author: "Nikolay Li",
-    },
 ];
 
 const TestimonialSlider = () => {
