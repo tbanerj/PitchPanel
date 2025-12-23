@@ -81,10 +81,22 @@ API will be available at: `http://localhost:8000/docs`
 ### 2. Frontend (Next.js)
 
 ```bash
-cd newfrontend
+cd frontend
 npm install
 npm run build
-sudo nohup npm run start > output.log 2>&1 &
+sudo npm install pm2 -g
+PORT=3000 pm2 start npm --name pitchpanel --start
+```
+
+PM checker
+```
+pm2 ls
+```
+
+Adding to startup:
+```
+pm2 startup systemd
+pm2 save
 ```
 
 App will run at: `http://localhost:3000`
