@@ -72,6 +72,7 @@ cd backend
 python -m venv venv
 source venv/bin/activate  # or .\venv\Scripts\activate on Windows
 pip install -r requirements.txt
+apt install ffmpeg
 nohup uvicorn main:app --host 0.0.0.0 --port 8000 --ssl-keyfile=../frontend/ssl/key.key --ssl-certfile=../frontend/ssl/cert.cer > uvicorn.log 2>&1 &
 ```
 
