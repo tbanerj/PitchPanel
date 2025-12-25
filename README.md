@@ -85,7 +85,7 @@ cd frontend
 npm install
 npm run build
 sudo npm install pm2 -g
-PORT=3000 pm2 start npm --name pitchpanel --start
+PORT=3000 pm2 start npm --name pitchpanel -- start
 ```
 
 PM checker
@@ -96,6 +96,7 @@ pm2 ls
 Adding to startup:
 ```
 pm2 startup systemd
+sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
 pm2 save
 ```
 
