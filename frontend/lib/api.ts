@@ -12,11 +12,7 @@ const apiClient = axios.create({
 });
 
 
-// Add CORS support for the client
-apiClient.interceptors.request.use(config => {
-  config.withCredentials = true;
-  return config;
-});
+
 
 export async function analyzeFile(
   audioFile: File,
