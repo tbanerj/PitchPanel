@@ -25,17 +25,12 @@ app = FastAPI(
 IS_DEVELOPMENT = os.getenv("ENVIRONMENT", "development") == "development"
 
 ALLOWED_ORIGINS = [
-    "http://localhost:443",  # Next.js default dev port
-    "https://localhost:443",
-    "http://127.0.0.1:443",
-    "https://127.0.0.1:443",
-    "https://pitchpanel.org",
-    "http://192.168.0.111:3000", #Trinav computer
-    "https://www.pitchpanel.org",
-    "https://pitchpanel.org:8000",
-    "http://pitchpanel.org:8000",
-    "https://0.0.0.0:8000",
-    "https://localhost:8000",  # Local dev server
+    origin.strip()
+    for origin in os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:3000",
+    ).split(",")
+    if origin.strip()
 ]
 
 
@@ -43,10 +38,9 @@ ALLOWED_ORIGINS = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,  # Changed to True if using cookies/sessions
-    allow_methods=["*"],  # You had only POST/OPTIONS - expand to all needed methods
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
-    expose_headers=["*"]  # Changed from just Content-Disposition
 )
 
 # ====================== Constants & Helpers ======================
